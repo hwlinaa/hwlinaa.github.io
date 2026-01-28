@@ -12,6 +12,7 @@
             height: 100%;
             background-color: #000;
             overflow: hidden;
+            transition: opacity 1s ease; /* 為了跳轉時的淡出效果做準備 */
         }
 
         #container {
@@ -19,7 +20,7 @@
             width: 100%;
             height: 100%;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent; /* 移除手機點擊時的藍色高光塊 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 影片層 */
@@ -55,7 +56,7 @@
             width: 100%;
             height: 100%;
             background-color: black;
-            opacity: 0.8; 
+            opacity: 0.6; 
             z-index: 3;
             pointer-events: none;
             transition: opacity 1s ease-out;
@@ -73,21 +74,15 @@
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
             z-index: 4;
             pointer-events: none;
-            transition: opacity 0.5s ease-out; /* 設定淡出時間 */
-            animation: pulse 2s infinite;      /* 呼吸燈動畫 */
+            transition: opacity 0.5s ease-out;
+            animation: pulse 2s infinite;
         }
 
         /* --- 點擊後的狀態變化 --- */
-        
         .is-lit #dim-image { opacity: 0; }
         .is-lit #dark-overlay { opacity: 0; }
         .is-lit #lit-video { opacity: 1; }
-        
-        /* 關鍵修正：點擊後不但要變透明，還要停止動畫 */
-        .is-lit #instruction { 
-            opacity: 0; 
-            animation: none; /* 強制停止呼吸燈，文字才會徹底消失 */
-        }
+        .is-lit #instruction { opacity: 0; animation: none; }
 
         @keyframes pulse {
             0% { opacity: 0.6; }
@@ -108,6 +103,8 @@
 
     <script>
         let hasClicked = false;
+        // 設定您的 Jotform 網址
+        const targetUrl = "https://www.jotform.com/app/243098567658474";
 
         function playVideo() {
             if (hasClicked) return;
@@ -120,18 +117,35 @@
             video.muted = false;
             video.volume = 1.0; 
 
-            // 2. 觸發視覺動畫 (這會讓文字消失)
+            // 2. 觸發視覺動畫
             container.classList.add('is-lit');
 
             // 3. 播放影片
             setTimeout(() => {
                  video.play().catch(error => {
                     console.log("播放受阻:", error);
-                    // 如果自動播放失敗，靜音播放以確保畫面出現
                     video.muted = true; 
                     video.play();
                 });
             }, 100);
+
+            // 4. 新增：監聽影片結束事件，然後跳轉
+            video.onended = function() {
+                // 先讓畫面變黑 (淡出效果)
+                document.body.style.opacity = '0';
+                
+                // 等待 1 秒鐘的淡出動畫後，執行跳轉
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 1000);
+            };
+
+            /* 【備用方案】
+            如果您的影片很長，或者您希望在影片播放 5 秒後就強制跳轉，
+            請刪除上面的 video.onended 整段，改用下面這行：
+            
+            setTimeout(() => { window.location.href = targetUrl; }, 5000); 
+            */
         }
     </script>
 
