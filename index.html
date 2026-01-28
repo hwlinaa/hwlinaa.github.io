@@ -2,120 +2,117 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英才會 - 點亮祈福</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>點亮祈福</title>
     <style>
+        /* 基本設定，移除邊距，黑色背景 */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
             background-color: #000;
-            font-family: "Microsoft JhengHei", sans-serif;
+            overflow: hidden; /* 防止滾動 */
         }
 
-        /* 容器：包含背景圖和特效 */
+        /* 容器：佔滿螢幕，用於捕捉點擊 */
         #container {
             position: relative;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             cursor: pointer;
         }
 
-        /* 背景圖片設定 */
-        #bg-image {
+        /* 圖片與影片的通用樣式：絕對定位，填滿容器 */
+        #dim-image, #lit-video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 確保圖片填滿螢幕 */
-            
-            /* 初始狀態：暗淡、稍微模糊 */
-            filter: brightness(0.3) grayscale(0.4); 
-            transition: filter 2.5s ease-in-out, transform 10s ease-out;
+            object-fit: cover; /* 確保素材保持比例填滿螢幕，不會變形 */
+            transition: opacity 0.8s ease-in-out; /* 讓切換時有淡入淡出效果 */
         }
 
-        /* 提示文字 */
+        /* 影片初始狀態：透明度為 0 (隱藏) */
+        #lit-video {
+            opacity: 0;
+            z-index: 1; /* 影片在下層 */
+        }
+
+        /* 圖片初始狀態：透明度為 1 (顯示) */
+        #dim-image {
+            opacity: 1;
+            z-index: 2; /* 圖片在上層 */
+        }
+
+        /* 提示文字樣式 */
         #instruction {
             position: absolute;
             bottom: 15%;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.5rem;
-            text-shadow: 0 0 10px #ffaa00;
-            animation: pulse 2s infinite;
-            z-index: 10;
-            pointer-events: none; /* 讓點擊能穿透文字 */
-        }
-
-        /* 亮起後的狀態 (由 JavaScript 觸發) */
-        .lit-up #bg-image {
-            filter: brightness(1.1) contrast(1.1); /* 變亮 */
-            transform: scale(1.05); /* 微微放大，製造浮動感 */
-        }
-
-        .lit-up #instruction {
-            opacity: 0;
-            transition: opacity 1s;
-        }
-
-        /* 光暈特效 */
-        .glow-overlay {
-            position: absolute;
             width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,170,0,0.2) 0%, rgba(0,0,0,0) 70%);
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
-            pointer-events: none;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            font-family: sans-serif;
+            z-index: 3;
+            pointer-events: none; /* 讓點擊穿透文字 */
+            transition: opacity 0.5s;
+        }
+
+        /* 點擊後的狀態 Class */
+        .is-lit #dim-image {
+            opacity: 0; /* 圖片淡出 */
         }
         
-        .lit-up .glow-overlay {
-            opacity: 1;
+        .is-lit #lit-video {
+            opacity: 1; /* 影片淡入 */
         }
 
-        /* 文字呼吸燈動畫 */
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0.5; transform: scale(0.95); }
+        .is-lit #instruction {
+            opacity: 0; /* 文字消失 */
         }
     </style>
 </head>
 <body>
 
-    <div id="container" onclick="lightUp()">
-        <img id="bg-image" src="lantern.jpg" alt="孔明燈">
+    <div id="container" onclick="playVideo()">
+        <img id="dim-image" src="dim_lantern.jpg" alt="點擊前">
         
-        <div class="glow-overlay"></div>
+        <video id="lit-video" src="lit_video.mp4" playsinline muted preload="auto"></video>
 
-        <div id="instruction">點擊點亮孔明燈</div>
+        <div id="instruction">輕觸螢幕點亮孔明燈</div>
     </div>
 
     <script>
-        let isLit = false;
+        let hasClicked = false;
 
-        function lightUp() {
-            if (isLit) return; // 如果已經亮了，就不重複觸發
-            
+        function playVideo() {
+            if (hasClicked) return; // 防止重複點擊
+            hasClicked = true;
+
             const container = document.getElementById('container');
-            const instruction = document.getElementById('instruction');
+            const video = document.getElementById('lit-video');
 
-            // 添加 CSS class 來觸發動畫
-            container.classList.add('lit-up');
-            
-            // 更改文字
-            instruction.innerText = ""; 
+            // 1. 添加 class 來觸發 CSS 的淡入淡出動畫
+            container.classList.add('is-lit');
 
-            isLit = true;
-            
-            // 可選：如果你想要之後跳轉到其他頁面（例如 Jotform）
-            // setTimeout(() => { window.location.href = "你的問卷網址"; }, 4000);
+            // 2. 播放影片
+            // 稍微延遲一點點播放，讓淡入效果更順暢
+            setTimeout(() => {
+                 video.play().catch(error => {
+                    console.log("影片播放失敗，可能是瀏覽器限制:", error);
+                    // 如果自動播放失敗（極少數舊手機），確保影片至少顯示出來
+                    video.style.opacity = 1; 
+                });
+            }, 100);
+
+            // (可選) 如果影片播完後想要做什麼事，可以在這裡設定
+            // video.onended = function() { 
+            //    alert("祈福完成！");
+            // };
         }
     </script>
+
 </body>
 </html>
