@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>點亮祈福</title>
+    <title>天燈祈福</title>
     <style>
-        /* 基本設定，移除邊距，黑色背景 */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             background-color: #000;
-            overflow: hidden; /* 防止滾動 */
+            overflow: hidden;
         }
 
-        /* 容器：佔滿螢幕，用於捕捉點擊 */
         #container {
             position: relative;
             width: 100%;
@@ -23,94 +21,107 @@
             cursor: pointer;
         }
 
-        /* 圖片與影片的通用樣式：絕對定位，填滿容器 */
-        #dim-image, #lit-video {
+        /* 1. 影片層 (最底層) - 預設隱藏 */
+        #lit-video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 確保素材保持比例填滿螢幕，不會變形 */
-            transition: opacity 0.8s ease-in-out; /* 讓切換時有淡入淡出效果 */
+            object-fit: cover;
+            opacity: 0; 
+            z-index: 1; 
+            transition: opacity 1.5s ease-in-out; /* 影片慢慢浮現 */
         }
 
-        /* 影片初始狀態：透明度為 0 (隱藏) */
-        #lit-video {
-            opacity: 0;
-            z-index: 1; /* 影片在下層 */
-        }
-
-        /* 圖片初始狀態：透明度為 1 (顯示) */
+        /* 2. 圖片層 (中間層) */
         #dim-image {
-            opacity: 1;
-            z-index: 2; /* 圖片在上層 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            transition: opacity 1s ease-out; /* 圖片慢慢消失 */
         }
 
-        /* 提示文字樣式 */
+        /* 3. 黑色變暗遮罩 (覆蓋在圖片上) */
+        #dark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0.6; /* 這裡調整暗度：0.1(淺) ~ 0.9(深) */
+            z-index: 3;
+            pointer-events: none; /* 讓點擊能穿透這層 */
+            transition: opacity 1s ease-out;
+        }
+
+        /* 4. 文字層 (最上層) */
         #instruction {
             position: absolute;
             bottom: 15%;
             width: 100%;
             text-align: center;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1.2rem;
-            font-family: sans-serif;
-            z-index: 3;
-            pointer-events: none; /* 讓點擊穿透文字 */
+            font-family: "Microsoft JhengHei", sans-serif;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            z-index: 4;
+            pointer-events: none;
             transition: opacity 0.5s;
+            animation: pulse 2s infinite;
         }
 
-        /* 點擊後的狀態 Class */
-        .is-lit #dim-image {
-            opacity: 0; /* 圖片淡出 */
-        }
-        
-        .is-lit #lit-video {
-            opacity: 1; /* 影片淡入 */
-        }
+        /* 點擊後的狀態變化 */
+        .is-lit #dim-image { opacity: 0; }     /* 圖片消失 */
+        .is-lit #dark-overlay { opacity: 0; }  /* 黑影消失 -> 變亮 */
+        .is-lit #lit-video { opacity: 1; }     /* 影片浮現 */
+        .is-lit #instruction { opacity: 0; }   /* 文字消失 */
 
-        .is-lit #instruction {
-            opacity: 0; /* 文字消失 */
+        /* 文字呼吸燈動畫 */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
         }
     </style>
 </head>
 <body>
 
     <div id="container" onclick="playVideo()">
-        <img id="dim-image" src="dim_lantern.jpg" alt="點擊前">
-        
         <video id="lit-video" src="lit_video.mp4" playsinline muted preload="auto"></video>
 
-        <div id="instruction">輕觸螢幕點亮孔明燈</div>
+        <img id="dim-image" src="dim_lantern.jpg" alt="點擊前">
+
+        <div id="dark-overlay"></div>
+
+        <div id="instruction">輕觸放飛孔明燈</div>
     </div>
 
     <script>
         let hasClicked = false;
 
         function playVideo() {
-            if (hasClicked) return; // 防止重複點擊
+            if (hasClicked) return;
             hasClicked = true;
 
             const container = document.getElementById('container');
             const video = document.getElementById('lit-video');
 
-            // 1. 添加 class 來觸發 CSS 的淡入淡出動畫
+            // 1. 觸發 CSS 動畫 (移除黑影、隱藏圖片、顯示影片)
             container.classList.add('is-lit');
 
             // 2. 播放影片
-            // 稍微延遲一點點播放，讓淡入效果更順暢
             setTimeout(() => {
                  video.play().catch(error => {
-                    console.log("影片播放失敗，可能是瀏覽器限制:", error);
-                    // 如果自動播放失敗（極少數舊手機），確保影片至少顯示出來
+                    console.log("播放受阻:", error);
                     video.style.opacity = 1; 
                 });
             }, 100);
-
-            // (可選) 如果影片播完後想要做什麼事，可以在這裡設定
-            // video.onended = function() { 
-            //    alert("祈福完成！");
-            // };
         }
     </script>
 
