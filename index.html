@@ -229,6 +229,9 @@
         function startStageOne() {
             if (!areVideosReady || hasStarted) return;
             hasStarted = true;
+            const instruction = document.getElementById('instruction');
+            instruction.style.opacity = '0';
+            instruction.classList.remove('ready-text');
             vid1.muted = false; vid1.volume = 1.0;
             container.classList.add('stage-one');
             const playPromise = vid1.play();
