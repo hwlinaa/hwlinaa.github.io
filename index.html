@@ -211,7 +211,7 @@
             
             areVideosReady = true;
             loader.style.opacity = '0';
-            instruction.innerText = "輕觸點亮孔明燈";
+            instruction.innerText = "輕觸放飛孔明燈";
             instruction.style.opacity = '1';
             instruction.classList.add('ready-text');
         }).catch(err => {
@@ -220,7 +220,7 @@
             vid1.src = fileVideo1;
             vid2.src = fileVideo2;
             areVideosReady = true;
-            instruction.innerText = "輕觸點亮孔明燈 (網絡不安全)";
+            instruction.innerText = "輕觸放飛孔明燈（請注意強風）";
         });
 
         function videoFile(name) { return name; }
