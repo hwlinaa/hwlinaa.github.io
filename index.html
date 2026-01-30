@@ -169,7 +169,7 @@
         <img id="dim-image" src="dim_lantern.jpeg" alt="點擊前">
         <div id="dark-overlay"></div>
         <div id="loader">建立加密連線...</div>
-        <div id="instruction" style="opacity: 0.5">輕觸點亮孔明燈</div>
+        <div id="instruction" style="opacity: 0.5">莊員正為你準備火柴</div>
 
         <div class="hud-layer">
             <div class="hud-scanlines"></div>
@@ -211,7 +211,7 @@
             
             areVideosReady = true;
             loader.style.opacity = '0';
-            instruction.innerText = "TOUCH TO INITIATE"; // 改成英文提示
+            instruction.innerText = "輕觸點亮孔明燈";
             instruction.style.opacity = '1';
             instruction.classList.add('ready-text');
         }).catch(err => {
@@ -220,7 +220,7 @@
             vid1.src = fileVideo1;
             vid2.src = fileVideo2;
             areVideosReady = true;
-            instruction.innerText = "TOUCH TO INITIATE (BACKUP MODE)";
+            instruction.innerText = "輕觸點亮孔明燈 (網絡不安全)";
         });
 
         function videoFile(name) { return name; }
