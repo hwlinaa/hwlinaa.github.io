@@ -3,149 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>點亮祈福</title>
+    <title>Protect the Light</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            overflow: hidden;
-            transition: opacity 1s ease; /* 為了跳轉時的淡出效果做準備 */
+        /* --- 核心變數定義 --- */
+        :root {
+            --hud-color: #00ffff; /* 青色霓虹光 */
+            --hud-bg: rgba(0, 20, 30, 0.8); /* 深藍黑色半透明 */
         }
 
-        #container {
+        /* --- 基礎設定 --- */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #000; overflow: hidden; font-family: 'Share Tech Mono', monospace; /* 使用科技字體 */ }
+        #container { position: relative; width: 100%; height: 100%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+        /* --- 影片與遮罩層級 --- */
+        #video-1 { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; z-index: 1; transition: opacity 1.5s ease-in-out; }
+        #video-2 { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; z-index: 2; transition: opacity 1s ease-in-out; filter: contrast(1.2) brightness(0.8); /* 稍微調暗背景影片，讓介面更突出 */ }
+        #dim-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; transition: opacity 1s ease-out; }
+        #dark-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: black; opacity: 0.6; z-index: 4; pointer-events: none; transition: opacity 1s ease-out; }
+
+        /* --- 初始提示 UI --- */
+        #instruction { position: absolute; bottom: 15%; width: 100%; text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 1.2rem; text-shadow: 0 0 5px rgba(0,0,0,0.5); z-index: 5; pointer-events: none; transition: opacity 0.5s ease-out; letter-spacing: 2px; }
+        #loader { position: absolute; bottom: 12%; width: 100%; text-align: center; color: var(--hud-color); font-size: 0.9rem; z-index: 6; transition: opacity 0.5s; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 5px var(--hud-color); }
+
+
+        /* =========================================
+           === 介面核心樣式 (Stage 2) ===
+        ========================================= */
+
+        /* 1. HUD 裝飾層 (最上層，不可點擊) */
+        .hud-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 11; /* 在按鈕之上 */
+            pointer-events: none; /* 關鍵：讓點擊穿透 */
+            opacity: 0; /* 初始隱藏 */
+            transition: opacity 1s ease-in-out;
+            mix-blend-mode: screen; /* 讓光效疊加更自然 */
+        }
+
+        /* 裝飾：角落邊框 */
+        .hud-corner {
+            position: absolute;
+            width: 50px; height: 50px;
+            border-color: var(--hud-color);
+            border-style: solid;
+            box-shadow: 0 0 10px var(--hud-color), inset 0 0 10px var(--hud-color);
+            opacity: 0.7;
+        }
+        .hc-tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; } /* 左上 */
+        .hc-tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; } /* 右上 */
+        .hc-bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; } /* 左下 */
+        .hc-br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; } /* 右下 */
+
+        /* 裝飾：掃描線背景 */
+        .hud-scanlines {
+            position: absolute; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 2px,
+                rgba(0, 255, 255, 0.05) 3px
+            );
+            pointer-events: none;
+        }
+
+        /* 裝飾：頂部數據條 */
+        .hud-top-bar {
+            position: absolute; top: 30px; width: 100%; text-align: center;
+            color: var(--hud-color); font-size: 0.8rem; letter-spacing: 3px;
+            text-shadow: 0 0 5px var(--hud-color);
+            opacity: 0; transform: translateY(-20px); transition: all 1s ease-out 0.5s; /* 延遲出現 */
+        }
+
+        /* 2. 按鈕容器 */
+        #button-container {
+            position: absolute;
+            bottom: 15%; 
+            width: 100%;
+            display: flex;
+            flex-direction: column; /* 改成垂直排列，更有介面感 */
+            align-items: center;
+            gap: 25px; 
+            z-index: 10;
+            
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.22, 0.61, 0.36, 1); /* 更有彈性的出現動畫 */
+            pointer-events: none; 
+        }
+
+        /* 3. 特務風格按鈕 */
+        .action-btn {
             position: relative;
-            width: 100%;
-            height: 100%;
+            padding: 15px 40px;
+            width: 200px; /* 固定寬度 */
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            text-transform: uppercase; /* 全大寫 */
+            letter-spacing: 2px;
+            color: var(--hud-color);
+            background: var(--hud-bg); /* 深色半透明背景 */
+            border: 1px solid var(--hud-color); /* 螢光邊框 */
+            /* 複合陰影製造發光感 */
+            box-shadow: 0 0 5px rgba(0,255,255,0.3), inset 0 0 10px rgba(0,255,255,0.1);
+            text-shadow: 0 0 5px var(--hud-color);
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+            transition: all 0.3s ease;
+            overflow: hidden; /* 用於隱藏掃光效果 */
         }
 
-        /* 影片層 */
-        #lit-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0; 
-            z-index: 1; 
-            transition: opacity 1.5s ease-in-out;
+        /* 按鈕裝飾：左側的小方塊 */
+        .action-btn::before {
+            content: '';
+            position: absolute; top: 50%; left: 10px; transform: translateY(-50%);
+            width: 8px; height: 8px; background: var(--hud-color);
+            box-shadow: 0 0 10px var(--hud-color);
         }
 
-        /* 圖片層 */
-        #dim-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 2;
-            transition: opacity 1s ease-out;
+        /* 按鈕懸停效果：故障風 + 填滿 */
+        .action-btn:hover {
+            background: var(--hud-color);
+            color: #000; /* 文字變黑 */
+            text-shadow: none;
+            box-shadow: 0 0 20px var(--hud-color), inset 0 0 20px var(--hud-color);
+            transform: scale(1.05);
+        }
+        .action-btn:active { transform: scale(0.95); }
+
+        /* 特定按鈕微調 (可選，例如給第二個按鈕不同顏色，這裡先統一) */
+        /* #btn-event { --hud-color: #ff3333; } */
+
+        /* =========================================
+           === 狀態變化動畫 ===
+        ========================================= */
+        
+        /* Stage 1: 點亮 */
+        .stage-one #dim-image { opacity: 0; }
+        .stage-one #dark-overlay { opacity: 0; }
+        .stage-one #video-1 { opacity: 1; }
+        .stage-one #instruction { opacity: 0; animation: none; }
+        .stage-one #loader { opacity: 0; }
+
+        /* Stage 2: 特務介面啟動 */
+        .stage-two #video-2 { opacity: 1; }
+        .stage-two #video-1 { opacity: 0; } 
+        
+        /* 顯示 HUD 層 */
+        .stage-two .hud-layer { opacity: 1; }
+        .stage-two .hud-top-bar { opacity: 1; transform: translateY(0); }
+        
+        /* 顯示按鈕 */
+        .stage-two #button-container {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
         }
 
-        /* 黑色遮罩層 */
-        #dark-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            opacity: 0.6; 
-            z-index: 3;
-            pointer-events: none;
-            transition: opacity 1s ease-out;
-        }
-
-        /* 文字層 */
-        #instruction {
-            position: absolute;
-            bottom: 15%;
-            width: 100%;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2rem;
-            font-family: "Microsoft JhengHei", sans-serif;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            z-index: 4;
-            pointer-events: none;
-            transition: opacity 0.5s ease-out;
-            animation: pulse 2s infinite;
-        }
-
-        /* --- 點擊後的狀態變化 --- */
-        .is-lit #dim-image { opacity: 0; }
-        .is-lit #dark-overlay { opacity: 0; }
-        .is-lit #lit-video { opacity: 1; }
-        .is-lit #instruction { opacity: 0; animation: none; }
-
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
+        /* 呼吸燈動畫 */
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .ready-text { animation: pulse 1.5s infinite; color: var(--hud-color); text-shadow: 0 0 10px var(--hud-color); }
     </style>
 </head>
 <body>
 
-    <div id="container" onclick="playVideo()">
-        <video id="lit-video" src="lit_video.mp4" playsinline preload="auto"></video>
+    <div id="container" onclick="startStageOne()">
+        
+        <video id="video-1" playsinline webkit-playsinline preload="auto"></video>
+        <video id="video-2" playsinline webkit-playsinline loop preload="auto"></video>
 
-        <img id="dim-image" src="dim_lantern.jpg" alt="點擊前">
+        <img id="dim-image" src="dim_lantern.jpeg" alt="點擊前">
         <div id="dark-overlay"></div>
-        <div id="instruction">輕觸點亮孔明燈</div>
-    </div>
+        <div id="loader">SYSTEM INITIALIZING...</div>
+        <div id="instruction" style="opacity: 0.5">AWAITING INPUT</div>
+
+        <div class="hud-layer">
+            <div class="hud-scanlines"></div>
+            <div class="hud-corner hc-tl"></div>
+            <div class="hud-corner hc-tr"></div>
+            <div class="hud-corner hc-bl"></div>
+            <div class="hud-corner hc-br"></div>
+            <div class="hud-top-bar">/// SECURE ACCESS TERMINAL /// <br> STATUS: ACTIVE</div>
+        </div>
+
+        <div id="button-container">
+            <button id="btn-join" class="action-btn" onclick="window.location.href='https://www.newgen.org.hk/'">JOIN MISSION</button>
+            <button id="btn-event" class="action-btn" onclick="window.location.href='https://stic.newgen.org.hk'">ACCESS EVENT DATA</button>
+        </div>
+        </div>
 
     <script>
-        let hasClicked = false;
-        // 設定您的 Jotform 網址
-        const targetUrl = "https://www.jotform.com/app/243098567658474";
+        // --- 設定區 ---
+        const fileVideo1 = "lit_video.mp4"; 
+        const fileVideo2 = "3d_logo.mp4"; // 請確認這裡的檔名正確
+        // --- 設定結束 ---
 
-        function playVideo() {
-            if (hasClicked) return;
-            hasClicked = true;
+        const container = document.getElementById('container');
+        const vid1 = document.getElementById('video-1');
+        const vid2 = document.getElementById('video-2');
+        const instruction = document.getElementById('instruction');
+        const loader = document.getElementById('loader');
+        
+        let areVideosReady = false;
+        let hasStarted = false;
 
-            const container = document.getElementById('container');
-            const video = document.getElementById('lit-video');
-
-            // 1. 開啟聲音
-            video.muted = false;
-            video.volume = 1.0; 
-
-            // 2. 觸發視覺動畫
-            container.classList.add('is-lit');
-
-            // 3. 播放影片
-            setTimeout(() => {
-                 video.play().catch(error => {
-                    console.log("播放受阻:", error);
-                    video.muted = true; 
-                    video.play();
-                });
-            }, 100);
-
-            // 4. 新增：監聽影片結束事件，然後跳轉
-            video.onended = function() {
-                // 先讓畫面變黑 (淡出效果)
-                document.body.style.opacity = '0';
-                
-                // 等待 1 秒鐘的淡出動畫後，執行跳轉
-                setTimeout(() => {
-                    window.location.href = targetUrl;
-                }, 1000);
-            };
-
-            /* 【備用方案】
-            如果您的影片很長，或者您希望在影片播放 5 秒後就強制跳轉，
-            請刪除上面的 video.onended 整段，改用下面這行：
+        // 雙重預加載
+        Promise.all([
+            fetch(videoFile(fileVideo1)).then(res => res.blob()),
+            fetch(videoFile(fileVideo2)).then(res => res.blob())
+        ]).then(blobs => {
+            vid1.src = URL.createObjectURL(blobs[0]);
+            vid2.src = URL.createObjectURL(blobs[1]);
             
-            setTimeout(() => { window.location.href = targetUrl; }, 5000); 
-            */
+            areVideosReady = true;
+            loader.style.opacity = '0';
+            instruction.innerText = "TOUCH TO INITIATE"; // 改成英文提示
+            instruction.style.opacity = '1';
+            instruction.classList.add('ready-text');
+        }).catch(err => {
+            console.error("預加載失敗:", err);
+            loader.innerText = "LOAD ERROR";
+            vid1.src = fileVideo1;
+            vid2.src = fileVideo2;
+            areVideosReady = true;
+            instruction.innerText = "TOUCH TO INITIATE (BACKUP MODE)";
+        });
+
+        function videoFile(name) { return name; }
+
+        // Stage 1
+        function startStageOne() {
+            if (!areVideosReady || hasStarted) return;
+            hasStarted = true;
+            vid1.muted = false; vid1.volume = 1.0;
+            container.classList.add('stage-one');
+            const playPromise = vid1.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => { vid1.muted = true; vid1.play(); });
+            }
+            vid1.onended = function() {
+                startStageTwo();
+            };
+        }
+
+        // Stage 2 (啟動特務介面)
+        function startStageTwo() {
+            console.log("建立加密連線...");
+            vid2.muted = false; vid2.volume = 1.0;
+            vid2.play().catch(() => { vid2.muted = true; vid2.play(); });
+            container.classList.add('stage-two');
         }
     </script>
 
