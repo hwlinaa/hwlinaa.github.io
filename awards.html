@@ -3,14 +3,15 @@
 
 <head>
     <script>
-        // 網站全域設定
+        // 🔧🔧🔧 網站全域設定 🔧🔧🔧
         const SITE_CONFIG = {
             title: "第28屆香港青少年科技創新大賽",
             subTitle: "得獎名單",
 
+            // 👇 Google Sheet CSV 連結
             csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHwzz4c7qGa443DYQUz6a6Xx4n8NmdDn5bBYvBXwgppz2qJ4wyqX2eWZhKvfZH5LJKXn2JE5WKf6JE/pub?gid=489690344&single=true&output=csv",
 
-            fullUrl: "https://results.stic.newgen.org.hk/awards.html",
+            fullUrl: "https://stic.newgen.org.hk",
             logoUrl: "https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png"
         };
     </script>
@@ -327,12 +328,11 @@
             border: 1px solid #6EE7B7;
         }
 
-        /* 📜 初評優異 (淺灰色) */
+        /* 📜 初評優異 (天藍色) */
         .badge-prelim {
-            background: #F9FAFB;
-            color: #6B7280;
-            border: 1px dashed #D1D5DB;
-            font-weight: normal;
+            background: #EFF6FF;
+            color: #1E40AF;
+            border: 1px solid #60A5FA;
         }
 
         /* 🌟 特別大獎/中銀獎 (尊貴紫漸層) */
@@ -341,6 +341,14 @@
             color: white;
             border: none;
             box-shadow: 0 2px 5px rgba(118, 75, 162, 0.3);
+        }
+
+        /* ⏳ 待定/詳情稍後 (灰色虛線) */
+        .badge-pending {
+            background: #F9FAFB;
+            color: #6B7280;
+            border: 1px dashed #D1D5DB;
+            font-weight: normal;
         }
 
         .no-results,
@@ -443,7 +451,7 @@
     <div class="side-menu" id="sideMenu">
         <button class="close-btn" onclick="toggleMenu()">×</button>
         <a href="index.html">🏆 入圍總評名單</a>
-        <a href="ceremony.html">📅 頒獎安排查詢</a>
+        <a href="ceremony.html">📅 頒獎安排</a>
         <a href="awards.html">🥇 得獎名單</a>
         <a href="https://stic.newgen.org.hk" target="_blank">🌐 大賽網站</a>
         <a href="https://app.jotform.com/243098567658474" target="_blank">📱 新一代 App</a>
@@ -617,8 +625,6 @@
 
                     // --- 🏆 獎項標籤產生邏輯 (支援疊加) ---
                     let badgesHtml = '';
-
-                    // ⚠️ 請確認您的 Google Sheet 欄位標題是 "獎項"
                     const awardText = row['獎項'] ? row['獎項'].trim() : '';
 
                     // 輔助函數：產生標籤
@@ -639,7 +645,7 @@
                             addBadge('二等獎', 'badge-2nd');
                         } else if (awardText.includes('三等')) {
                             addBadge('三等獎', 'badge-3rd');
-                        } else if (awardText.includes('初評優異')) { // 先檢查初評優異，避免被「優異」抓到
+                        } else if (awardText.includes('初評優異')) { // ✅ 先檢查初評優異，避免被「優異」抓到
                             addBadge('初評優異獎', 'badge-prelim');
                         } else if (awardText.includes('優異')) {
                             addBadge('優異獎', 'badge-merit');
@@ -651,7 +657,7 @@
                     // ----------------------------------------
 
                     const tr = document.createElement('tr');
-                    tr.style.cursor = "default"; // 得獎名單通常不需要彈出視窗
+                    tr.style.cursor = "default";
 
                     tr.innerHTML = `
                     <td><span class="badge-group">${row['參賽組別'] || ''}</span></td>
