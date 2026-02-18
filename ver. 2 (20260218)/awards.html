@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+
+<head>
+    <script>
+        // 網站全域設定
+        const SITE_CONFIG = {
+            title: "第28屆香港青少年科技創新大賽",
+            subTitle: "得獎名單",
+
+            // 👇 Google Sheet CSV 連結
+            csvUrl: "",
+
+            fullUrl: "https://stic.newgen.org.hk",
+            logoUrl: "https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png"
+        };
+    </script>
+
+    <meta property="og:title" content="香港青少年科技創新大賽 - 得獎名單">
+    <meta property="og:description" content="輸入參賽編號，查詢您的比賽結果。">
+    <meta property="og:image" content="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png">
+    <meta property="og:url" content="https://results.stic.hkngca.org/awards.html">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.gif" type="image/gif">
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>得獎名單</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0A3D91;
+            --accent-orange: #F28C28;
+            --bg-color: #F4F7FB;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-radius: 12px;
+            --menu-bg: #072a66;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 10px;
+            line-height: 1.6;
+        }
+
+        /* 導航列與選單樣式 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 950px;
+            margin: 0 auto 20px auto;
+            padding: 0 10px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        .menu-btn {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--primary-blue);
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 260px;
+            height: 100%;
+            background-color: var(--menu-bg);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            right: 0;
+        }
+
+        .side-menu a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.2s;
+        }
+
+        .side-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 35px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 950px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .header-title {
+            text-align: center;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .header-title h1 {
+            color: var(--primary-blue);
+            font-size: 1.6rem;
+            margin: 0 0 10px 0;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .notice-box {
+            background-color: #ebf8ff;
+            border-left: 5px solid #2b6cb0;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #2c5282;
+            font-size: 0.95rem;
+            border-radius: 4px;
+        }
+
+        /* 搜尋區塊 */
+        .search-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .search-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        select.form-select,
+        select.prefix-dropdown,
+        input.number-input {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: white;
+            outline: none;
+        }
+
+        select.form-select {
+            width: 100%;
+            max-width: 100%;
+            cursor: pointer;
+        }
+
+        select.prefix-dropdown {
+            font-weight: bold;
+            color: var(--primary-blue);
+            min-width: 90px;
+        }
+
+        input.number-input {
+            flex-grow: 1;
+            min-width: 140px;
+        }
+
+        button.btn-search,
+        button.btn-reset {
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button.btn-search {
+            background-color: var(--primary-blue);
+            color: white;
+            flex-grow: 1;
+        }
+
+        button.btn-reset {
+            background-color: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.2);
+        }
+
+        /* 表格與標籤 */
+        .table-responsive {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .badge-group {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        /* 🏆 獎項標籤樣式 (Badge Styles) */
+        .time-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            white-space: nowrap;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+
+        /* 🥇 一等獎 (金色) */
+        .badge-1st {
+            background: #FEF9C3;
+            color: #854D0E;
+            border: 1px solid #EAB308;
+        }
+
+        /* 🥈 二等獎 (銀灰色) */
+        .badge-2nd {
+            background: #F3F4F6;
+            color: #4B5563;
+            border: 1px solid #9CA3AF;
+        }
+
+        /* 🥉 三等獎 (銅橙色) */
+        .badge-3rd {
+            background: #FFF7ED;
+            color: #9A3412;
+            border: 1px solid #F97316;
+        }
+
+        /* 🏅 優異獎 (青綠色) */
+        .badge-merit {
+            background: #ECFDF5;
+            color: #047857;
+            border: 1px solid #6EE7B7;
+        }
+
+        /* 📜 初評優異 (天藍色) */
+        .badge-prelim {
+            background: #EFF6FF;
+            color: #1E40AF;
+            border: 1px solid #60A5FA;
+        }
+
+        /* 🌟 特別大獎/中銀獎 (尊貴紫漸層) */
+        .badge-special {
+            background: linear-gradient(135deg, #667EEA, #764BA2);
+            color: white;
+            border: none;
+            box-shadow: 0 2px 5px rgba(118, 75, 162, 0.3);
+        }
+
+        /* ⏳ 待定/詳情稍後 (灰色虛線) */
+        .badge-pending {
+            background: #F9FAFB;
+            color: #6B7280;
+            border: 1px dashed #D1D5DB;
+            font-weight: normal;
+        }
+
+        .no-results,
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .loading {
+            color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border: 2px solid #edf2f7;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                padding: 15px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            }
+
+            td {
+                display: block;
+                border: none;
+                padding: 5px 0;
+                text-align: left;
+                width: 100%;
+            }
+            /*
+            td:nth-child(5) {
+                order: -1;
+                text-align: center;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px dashed #e2e8f0;
+            }
+
+            .time-badge {
+                font-size: 1.1em;
+                display: inline-block;
+                box-sizing: border-box;
+                text-align: center;
+                width: auto;
+                margin: 2px;
+            }
+            */
+
+            td:nth-child(5) { 
+                order: -1; 
+                text-align: center; 
+                margin-bottom: 10px; 
+                padding-bottom: 10px; 
+                border-bottom: 1px dashed #e2e8f0;
+                /* 讓多個獎項置中並排，而不是強制換行 */
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+            /* 讓標籤在手機上保持適當大小，不強制 100% 寬度 */
+            .time-badge { font-size: 1.05em; display: inline-block; width: auto; margin: 0; }
+
+            td:nth-child(1),
+            td:nth-child(2) {
+                font-size: 0.9em;
+                color: var(--text-muted);
+                display: inline-block;
+                width: auto;
+                padding-right: 10px;
+            }
+
+            td:nth-child(3) {
+                font-size: 1.2em;
+                font-weight: bold;
+                color: var(--primary-blue);
+                margin-top: 5px;
+            }
+
+            td:nth-child(4) {
+                color: #555;
+                font-size: 1rem;
+                line-height: 1.5;
+                margin-top: 5px;
+            }
+
+            .filter-row,
+            .search-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo-text" id="navTitle"></div>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="side-menu" id="sideMenu">
+        <button class="close-btn" onclick="toggleMenu()">×</button>
+        <a href="index.html">🏆 入圍總評名單</a>
+        <a href="ceremony.html">📅 頒獎安排</a>
+        <a href="awards.html">🥇 得獎名單</a>
+        <a href="https://stic.newgen.org.hk" target="_blank">🌐 大賽網站</a>
+        <a href="https://app.jotform.com/243098567658474" target="_blank">📱 新一代 App</a>
+        <a href="https://stic.newgen.org.hk/聯絡我們/">📧 聯絡我們</a>
+    </div>
+
+    <div class="container">
+        <div class="header-title">
+            <h1 id="mainTitle"></h1>
+            <p id="pageSubTitle"></p>
+        </div>
+
+        <div class="notice-box">
+            <strong>💡 查詢指引：</strong> 請輸入參賽編號，查詢您的比賽結果。
+        </div>
+
+        <div class="search-section">
+            <div class="filter-row">
+                <select id="categorySelect" class="form-select" onchange="onCategoryChange(this.value)">
+                    <option value="all">📂 所有參賽組別 (全部)</option>
+                </select>
+            </div>
+            <div style="text-align: center; font-size: 0.9em; color: #888; margin: 5px 0;">— 或 —</div>
+            <div class="search-group">
+                <select id="prefixSelect" class="prefix-dropdown" onchange="onInputStart()">
+                    <option value="">首字</option>
+                </select>
+                <input type="tel" id="numInput" class="number-input" placeholder="輸入4位數字 (例: 1974)" maxlength="4"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,''); onInputStart();">
+                <button class="btn-search" onclick="filterData('byId')">搜尋編號</button>
+                <button class="btn-reset" onclick="resetSearch()">重置</button>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading">加載中...</div>
+
+        <div class="table-responsive" id="tableContainer" style="display: none;">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th width="15%">參賽組別</th>
+                        <th width="15%">參賽編號</th>
+                        <th width="20%">參賽者姓名</th>
+                        <th width="25%">作品名稱</th>
+                        <th width="25%">獲得獎項</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div id="noResults" class="no-results" style="display: none;">找不到相符紀錄，請檢查參賽編號。</div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化頁面文字
+        function initPageText() {
+            document.title = SITE_CONFIG.title + " - " + SITE_CONFIG.subTitle;
+            document.getElementById('navTitle').textContent = SITE_CONFIG.title;
+            document.getElementById('mainTitle').textContent = SITE_CONFIG.subTitle;
+            document.getElementById('pageSubTitle').textContent = SITE_CONFIG.title;
+        }
+        initPageText();
+
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        let allData = [];
+        let currentCategory = 'all';
+
+        Papa.parse(SITE_CONFIG.csvUrl, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function (results) {
+                allData = results.data;
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('tableContainer').style.display = 'block';
+                setupFilters(allData);
+                renderTable(allData);
+            },
+            error: function (err) {
+                document.getElementById('loadingIndicator').innerHTML =
+                    '<div style="text-align:center; color:red;">' +
+                    '⚠️ 尚未公布<br>' +
+                    '<button onclick="location.reload()" style="margin-top:10px; padding:8px 20px; border-radius:5px; border:1px solid #ccc; background:white;">點此重新整理</button>' +
+                    '</div>';
+            }
+        });
+
+        function setupFilters(data) {
+            const categorySet = new Set();
+            const prefixSet = new Set();
+            data.forEach(row => {
+                if (row['參賽組別']) categorySet.add(row['參賽組別'].trim());
+                if (row['參賽編號']) {
+                    const prefixMatch = row['參賽編號'].trim().match(/^[A-Za-z]+/);
+                    if (prefixMatch) prefixSet.add(prefixMatch[0].toUpperCase());
+                }
+            });
+            const catSelect = document.getElementById('categorySelect');
+            catSelect.innerHTML = '<option value="all">📂 所有參賽組別 (全部)</option>';
+            categorySet.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                catSelect.appendChild(option);
+            });
+            const prefixSelect = document.getElementById('prefixSelect');
+            Array.from(prefixSet).sort().forEach(prefix => {
+                const option = document.createElement('option');
+                option.value = prefix;
+                option.textContent = prefix;
+                prefixSelect.appendChild(option);
+            });
+        }
+
+        function onCategoryChange(cat) {
+            currentCategory = cat;
+            document.getElementById('prefixSelect').value = '';
+            document.getElementById('numInput').value = '';
+            filterData('byCat');
+        }
+
+        function onInputStart() {
+            document.getElementById('categorySelect').value = 'all';
+            currentCategory = 'all';
+        }
+
+        function filterData(mode) {
+            const prefix = document.getElementById('prefixSelect').value;
+            const num = document.getElementById('numInput').value.trim();
+            const searchId = (prefix + num).toUpperCase();
+            const filtered = allData.filter(row => {
+                if (searchId.length > 0) {
+                    return row['參賽編號'] && row['參賽編號'].toUpperCase().includes(searchId);
+                } else {
+                    return currentCategory === 'all' || row['參賽組別'] === currentCategory;
+                }
+            });
+            renderTable(filtered);
+        }
+
+        function resetSearch() {
+            document.getElementById('categorySelect').value = 'all';
+            document.getElementById('prefixSelect').value = '';
+            document.getElementById('numInput').value = '';
+            currentCategory = 'all';
+            filterData();
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+            const table = document.getElementById('resultsTable');
+            tbody.innerHTML = '';
+            if (data.length === 0) {
+                noResults.style.display = 'block'; table.style.display = 'none'; return;
+            }
+            noResults.style.display = 'none'; table.style.display = 'table';
+
+            data.forEach(row => {
+                if (row['參賽編號']) {
+                    let names = [];
+                    if (row['中文姓名'] && row['中文姓名'].trim()) names.push(row['中文姓名'].trim());
+                    if (row['姓名1'] && row['姓名1'].trim()) names.push(row['姓名1'].trim());
+                    if (row['姓名2'] && row['姓名2'].trim()) names.push(row['姓名2'].trim());
+                    if (row['姓名3'] && row['姓名3'].trim()) names.push(row['姓名3'].trim());
+                    let displayName = names.join('、');
+
+                    // --- 🏆 獎項標籤產生邏輯 (支援疊加) ---
+                    let badgesHtml = '';
+                    const awardText = row['獎項'] ? row['獎項'].trim() : '';
+
+                    // 輔助函數：產生標籤
+                    const addBadge = (text, className) => {
+                        badgesHtml += `<span class="time-badge ${className}">${text}</span>`;
+                    };
+
+                    if (awardText) {
+                        // 1. 🌟 先檢查特別大獎 (放在最顯眼位置)
+                        if (awardText.includes('中銀') || awardText.includes('少年科學家')) {
+                            addBadge('中銀香港少年科學家獎', 'badge-special');
+                        }
+
+                        // 2. 🥇 檢查名次
+                        if (awardText.includes('一等')) {
+                            addBadge('一等獎', 'badge-1st');
+                        } else if (awardText.includes('二等')) {
+                            addBadge('二等獎', 'badge-2nd');
+                        } else if (awardText.includes('三等')) {
+                            addBadge('三等獎', 'badge-3rd');
+                        } else if (awardText.includes('初評優異')) { // ✅ 先檢查初評優異，避免被「優異」抓到
+                            addBadge('初評優異獎', 'badge-prelim');
+                        } else if (awardText.includes('優異')) {
+                            addBadge('優異獎', 'badge-merit');
+                        }
+                    } else {
+                        // 如果沒有獎項資料
+                        addBadge('詳情稍後公佈', 'badge-pending');
+                    }
+                    // ----------------------------------------
+
+                    const tr = document.createElement('tr');
+                    tr.style.cursor = "default";
+
+                    tr.innerHTML = `
+                    <td><span class="badge-group">${row['參賽組別'] || ''}</span></td>
+                    <td><strong>${row['參賽編號'] || ''}</strong></td>
+                    <td style="line-height: 1.4;">${displayName}</td> 
+                    <td>${row['作品名稱'] || ''}</td>
+                    <td>${badgesHtml}</td>
+                `;
+                    tbody.appendChild(tr);
+                }
+            });
+        }
+
+        document.getElementById('numInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                filterData('byId');
+                document.getElementById('numInput').blur();
+            }
+        });
+    </script>
+</body>
+
+</html>
