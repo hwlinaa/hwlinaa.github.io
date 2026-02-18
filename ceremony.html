@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta property="og:title" content="第28屆香港青少年科技創新大賽 - 頒獎安排">
+    <meta property="og:description" content="輸入參賽編號，即時查詢您的頒獎儀式或典禮出席時段。">
+    <meta property="og:image" content="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png"> <meta property="og:url" content="https://results.stic.newgen.org.hk/">
+    <meta property="og:type" content="website">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第28屆香港青少年科技創新大賽 - 頒獎安排</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #0A3D91;
+            --accent-orange: #F28C28;
+            --bg-color: #F4F7FB;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-radius: 12px;
+            --menu-bg: #072a66;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 10px;
+            line-height: 1.6;
+        }
+
+        /* 導航列與選單樣式 */
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 950px; margin: 0 auto 20px auto; padding: 0 10px; }
+        .logo-text { font-weight: bold; color: var(--primary-blue); font-size: 1.1rem; }
+        .menu-btn { font-size: 1.8rem; cursor: pointer; color: var(--primary-blue); background: none; border: none; padding: 5px; }
+        .side-menu { position: fixed; top: 0; right: -280px; width: 260px; height: 100%; background-color: var(--menu-bg); box-shadow: -2px 0 10px rgba(0,0,0,0.2); transition: right 0.3s ease; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
+        .side-menu.open { right: 0; }
+        .side-menu a { padding: 15px 25px; text-decoration: none; font-size: 1.1rem; color: white; border-bottom: 1px solid rgba(255,255,255,0.1); transition: 0.2s; }
+        .side-menu a:hover { background-color: rgba(255,255,255,0.1); padding-left: 35px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: white; cursor: pointer; background: none; border: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 900; display: none; }
+        .overlay.show { display: block; }
+
+        /* 主容器 */
+        .container { max-width: 950px; margin: auto; background: var(--card-bg); padding: 30px; border-radius: var(--border-radius); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .header-title { text-align: center; border-bottom: 2px solid #edf2f7; padding-bottom: 20px; margin-bottom: 25px; }
+        .header-title h1 { color: var(--primary-blue); font-size: 1.6rem; margin: 0 0 10px 0; }
+        .header-title p { color: var(--text-muted); margin: 0; font-size: 1rem; }
+        
+        .notice-box { background-color: #ebf8ff; border-left: 5px solid #2b6cb0; padding: 15px; margin-bottom: 25px; color: #2c5282; font-size: 0.95rem; border-radius: 4px; }
+        .search-section { background: #f8fafc; padding: 20px; border-radius: var(--border-radius); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .filter-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .search-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        
+        select.form-select { padding: 12px; font-size: 16px; border: 2px solid #cbd5e1; border-radius: 8px; background-color: white; color: var(--text-main); outline: none; cursor: pointer; width: 100%; max-width: 100%; }
+        select.prefix-dropdown { padding: 12px; font-size: 16px; border: 2px solid #cbd5e1; border-radius: 8px; background-color: white; font-weight: bold; color: var(--primary-blue); min-width: 90px; }
+        input.number-input { padding: 12px; font-size: 16px; border: 2px solid #cbd5e1; border-radius: 8px; outline: none; flex-grow: 1; min-width: 140px; }
+        button.btn-search, button.btn-reset { padding: 12px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        button.btn-search { background-color: var(--primary-blue); color: white; flex-grow: 1; }
+        button.btn-reset { background-color: #e2e8f0; color: var(--text-main); }
+        input:focus, select:focus { border-color: var(--accent-orange); box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.2); }
+
+        .table-responsive { width: 100%; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #edf2f7; vertical-align: middle; }
+        th { background-color: #f8fafc; color: var(--text-muted); font-weight: 600; }
+        
+        .badge-group { display: inline-block; background: #f1f5f9; color: #475569; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; margin-bottom: 4px; }
+        
+        /* ⏰ 時段標籤樣式 */
+        .time-badge { display: inline-block; padding: 8px 16px; border-radius: 30px; font-weight: bold; font-size: 0.95em; white-space: nowrap; }
+        .badge-am1 { background: #DEF7EC; color: #03543F; border: 1px solid #84E1BC; }
+        .badge-am2 { background: #E1EFFE; color: #1E429F; border: 1px solid #A4CAFE; }
+        .badge-pm { background: linear-gradient(135deg, #667EEA, #764BA2); color: white; border: none; box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3); }
+        
+        /* 🆕 新增：「詳情稍後公佈」的標籤樣式 (灰色、虛線框，感覺很期待) */
+        .badge-pending { 
+            background: #F9FAFB; 
+            color: #6B7280; 
+            border: 1px dashed #D1D5DB; 
+            font-weight: normal; /* 不用太粗，低調一點 */
+        }
+
+        .no-results { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 1.1rem; }
+        .loading { text-align: center; padding: 40px; color: var(--primary-blue); font-weight: bold; }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px 15px; }
+            thead { display: none; }
+            tr { display: flex; flex-direction: column; background: white; border: 2px solid #edf2f7; border-radius: 12px; margin-bottom: 20px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+            td { display: block; border: none; padding: 5px 0; text-align: left; width: 100%; }
+            td:nth-child(5) { order: -1; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #e2e8f0; }
+            .time-badge { font-size: 1.1em; width: 100%; display: block; box-sizing: border-box; text-align: center; }
+            td:nth-child(1), td:nth-child(2) { font-size: 0.9em; color: var(--text-muted); display: inline-block; width: auto; padding-right: 10px; }
+            td:nth-child(3) { font-size: 1.2em; font-weight: bold; color: var(--primary-blue); margin-top: 5px; }
+            td:nth-child(4) { color: #555; font-size: 1rem; line-height: 1.5; margin-top: 5px; }
+            .filter-row, .search-group { flex-direction: column; align-items: stretch; }
+        }
+
+        /* --- 🆕 彈出視窗 (Modal) 樣式 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(3px); /* 背景模糊效果 */
+        }
+
+        .modal-container {
+            background: white; width: 90%; max-width: 800px; max-height: 90vh;
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative; overflow-y: auto; /* 內容太長可滾動 */
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: #f1f5f9; border: none; border-radius: 50%;
+            width: 36px; height: 36px; font-size: 20px; color: #666;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; z-index: 10;
+        }
+        .modal-close-btn:hover { background: #e2e8f0; color: #ce0000; }
+
+        .modal-body { padding: 0; } /* 內容區塊 */
+
+        /* 讓表格列變成可點擊的樣子 */
+        tbody tr { cursor: pointer; transition: transform 0.1s; }
+        tbody tr:hover { background-color: #f8fafc; transform: scale(1.005); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo-text">第28屆香港青少年科技創新大賽</div>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="side-menu" id="sideMenu">
+    <button class="close-btn" onclick="toggleMenu()">×</button>
+    <a href="index.html">🏆 入圍總評名單</a>
+    <a href="awards.html">🥇 得獎名單</a>
+    <a href="https://stic.newgen.org.hk" target="_blank">🌐 大賽網站</a>
+    <a href="https://app.jotform.com/243098567658474" target="_blank">📱 新一代 App</a>
+    <a href="https://stic.newgen.org.hk/聯絡我們/">📧 聯絡我們</a>
+</div>
+
+<div class="container">
+    <div class="header-title">
+        <h1>頒獎安排</h1>
+        <p>第28屆香港青少年科技創新大賽</p>
+    </div>
+
+    <div class="notice-box">
+        <strong>💡 查詢指引：</strong> 輸入參賽編號，即時查詢您的頒獎儀式或典禮出席時段。
+    </div>
+
+    <div class="search-section">
+        <div class="filter-row">
+            <select id="categorySelect" class="form-select" onchange="onCategoryChange(this.value)">
+                <option value="all">📂 所有參賽組別 (全部)</option>
+            </select>
+        </div>
+        <div style="text-align: center; font-size: 0.9em; color: #888; margin: 5px 0;">— 或 —</div>
+        <div class="search-group">
+            <select id="prefixSelect" class="prefix-dropdown" onchange="onInputStart()"><option value="">首字</option></select>
+            <input type="tel" id="numInput" class="number-input" placeholder="輸入4位數字 (例: 1974)" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,''); onInputStart();">
+            <button class="btn-search" onclick="filterData('byId')">搜尋編號</button>
+            <button class="btn-reset" onclick="resetSearch()">重置</button>
+        </div>
+    </div>
+
+    <div id="loadingIndicator" class="loading">敬請期待</div>
+    
+    <div class="table-responsive" id="tableContainer" style="display: none;">
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th width="15%">參賽組別</th>
+                    <th width="15%">參賽編號</th>
+                    <th width="20%">參賽者姓名</th>
+                    <th width="25%">作品名稱</th>
+                    <th width="25%">出席時段</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        <div id="noResults" class="no-results" style="display: none;">找不到相符紀錄，請檢查參賽編號。</div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('sideMenu').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('show');
+    }
+
+    let allData = [];
+    const csvUrl = 'data.csv'; 
+    let currentCategory = 'all';
+
+    Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            allData = results.data;
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('tableContainer').style.display = 'block';
+            setupFilters(allData); 
+            renderTable(allData);  
+        }
+    });
+
+    function setupFilters(data) {
+        const categorySet = new Set();
+        const prefixSet = new Set();
+        data.forEach(row => {
+            if (row['參賽組別']) categorySet.add(row['參賽組別'].trim());
+            if (row['參賽編號']) {
+                const prefixMatch = row['參賽編號'].trim().match(/^[A-Za-z]+/); 
+                if (prefixMatch) prefixSet.add(prefixMatch[0].toUpperCase());
+            }
+        });
+        const catSelect = document.getElementById('categorySelect');
+        catSelect.innerHTML = '<option value="all">📂 所有參賽組別 (全部)</option>';
+        categorySet.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat;
+            catSelect.appendChild(option);
+        });
+        const prefixSelect = document.getElementById('prefixSelect');
+        Array.from(prefixSet).sort().forEach(prefix => {
+            const option = document.createElement('option');
+            option.value = prefix;
+            option.textContent = prefix;
+            prefixSelect.appendChild(option);
+        });
+    }
+
+    function onCategoryChange(cat) {
+        currentCategory = cat;
+        document.getElementById('prefixSelect').value = '';
+        document.getElementById('numInput').value = '';
+        filterData('byCat');
+    }
+
+    function onInputStart() {
+        document.getElementById('categorySelect').value = 'all';
+        currentCategory = 'all';
+    }
+
+    function filterData(mode) {
+        const prefix = document.getElementById('prefixSelect').value;
+        const num = document.getElementById('numInput').value.trim();
+        const searchId = (prefix + num).toUpperCase();
+        const filtered = allData.filter(row => {
+            if (searchId.length > 0) {
+                return row['參賽編號'] && row['參賽編號'].toUpperCase().includes(searchId);
+            } else {
+                return currentCategory === 'all' || row['參賽組別'] === currentCategory;
+            }
+        });
+        renderTable(filtered);
+    }
+
+    function resetSearch() {
+        document.getElementById('categorySelect').value = 'all'; 
+        document.getElementById('prefixSelect').value = '';
+        document.getElementById('numInput').value = '';
+        currentCategory = 'all';
+        filterData(); 
+    }
+
+    // 🆕 顯示詳細資訊的函數
+    function showDetails(row) {
+        const modal = document.getElementById('detailModal');
+        const content = document.getElementById('modalContent');
+        const session = row['頒獎時段'] ? row['頒獎時段'].trim() : '';
+        
+        // 姓名組合
+        let names = [];
+        if (row['中文姓名']) names.push(row['中文姓名']);
+        if (row['姓名1']) names.push(row['姓名1']);
+        if (row['姓名2']) names.push(row['姓名2'].trim());
+        if (row['姓名3']) names.push(row['姓名3'].trim());
+        let displayName = names.filter(Boolean).join('、');
+
+        // 🟢 定義不同時段的詳細內容
+        let timeDetails = {};
+
+        let details = {
+            title: "頒獎典禮",
+            subTitle: "出席通知",
+            regTime: "14:30",
+            eventTimeLabel: "典禮",
+            eventTime: "15:30 - 17:30",
+            extraInfo: "", // 用於放「設展」或「流程」的額外資訊
+            themeColor: "#ce0000", // 預設紅色 (下午)
+            bgColor: "#fff5f5",    // 預設淺紅背景
+            borderColor: "#ffcccc"
+        };
+
+        // ---------------------------------------------------------
+        // 🟢 核心判斷邏輯 (根據 CSV 關鍵字切換內容)
+        // ---------------------------------------------------------
+
+        // 1. 🏆 一等獎 / 設展 (下午) - 根據您的指示偵測「設展」字眼
+        if (session.includes('設展')) {
+            details.title = "頒獎典禮 (設展)";
+            details.regTime = "13:45"; // 一等獎報到時間
+            details.eventTime = "15:30 - 17:30";
+            
+            // 增加一等獎專屬的提示文字 (參考電郵)
+            details.extraInfo = `
+                <tr>
+                    <td colspan="2" style="padding-top:10px; font-size:14px; color:#ff6100; line-height:1.5;">
+                        <strong>✨ 重要提示：</strong><br>
+                        敬請　閣下出席頒獎典禮並<strong>設展</strong>。<br>
+                        大會將安排主禮嘉賓和傳媒參觀展位，建議提前準備介紹內容。
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // 2. 📅 一般頒獎典禮 (下午)
+        else if (session.includes('頒獎典禮')) {
+            details.title = "頒獎典禮";
+            details.regTime = "14:30"; // 一般報到時間
+            details.eventTime = "15:30 - 17:30";
+        }
+        
+        // 3. ☀️ 頒獎儀式 (上午)
+        else if (session.includes('頒獎儀式')) {
+            details.title = "頒獎儀式";
+            details.eventTimeLabel = "時間"; // 上午叫「時間」不叫「典禮」
+            details.themeColor = "#ce0000"; // 根據電郵，上午也是用紅色強調
+            
+            // 判斷是第一節還是第二節
+            if (session.includes('一') || session.includes('1')) {
+                details.eventTime = "10:00 - 10:45"; // 假設第一節時間 (請自行校對)
+            } else {
+                details.eventTime = "11:30 - 12:15"; // 參考電郵的第二節時間
+            }
+            
+            details.regTime = "需於儀式開始前 30 分鐘報到"; // 或寫死時間
+            
+            // 上午儀式顯示「流程」而非名額
+            details.extraInfo = `
+                <tr>
+                    <td style="color: #666;" valign="top"><strong>流程：</strong></td>
+                    <td>得獎者於登記處報到，並依工作人員指示領取獎盃及拍照留念。</td>
+                </tr>
+            `;
+        }
+
+        // ❌ 如果時段是空的，不彈出視窗
+        if (!session) return;
+
+        // ---------------------------------------------------------
+        // 📄 生成 HTML (完全參考您提供的電郵樣式)
+        // ---------------------------------------------------------
+        content.innerHTML = `
+            <div style="background-color: #003366; padding: 25px 20px; text-align: center; border-radius: 12px 12px 0 0;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 20px; letter-spacing: 1px;">第28屆香港青少年科技創新大賽</h1>
+                <h2 style="color: #fecc11; margin: 5px 0 0 0; font-size: 18px; letter-spacing: 1px;">${details.title}</h2>
+            </div>
+
+            <div style="padding: 20px;">
+                <p style="font-size: 16px; color: #333; margin-bottom: 20px; text-align: center;">
+                    <strong>${displayName}</strong> 同學：<br>
+                    <span style="color: #ff6100;"><strong>恭喜/誠邀</strong></span>　閣下出席${details.title}。
+                </p>
+
+                <div style="background-color: ${details.bgColor}; border-left: 5px solid ${details.themeColor}; padding: 20px; border-radius: 4px; margin-bottom: 20px;">
+                    <h3 style="margin: 0 0 15px 0; color: ${details.themeColor}; font-size: 18px; border-bottom: 1px solid ${details.borderColor}; padding-bottom: 10px;">
+                        📅 安排詳情
+                    </h3>
+                    <table style="font-size: 15px; color: #333;" border="0" width="100%" cellspacing="0" cellpadding="5">
+                        <tbody>
+                            <tr>
+                                <td style="color: #666;" valign="top" width="25%"><strong>日期：</strong></td>
+                                <td width="75%"><strong>2026 年 3 月 22 日 (星期日)</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color: ${details.themeColor};" valign="top"><strong>報到：</strong></td>
+                                <td style="color: ${details.themeColor}; font-weight: bold; font-size: 1.1em;">${details.regTime}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #666;" valign="top"><strong>${details.eventTimeLabel}：</strong></td>
+                                <td>${details.eventTime}</td>
+                            </tr>
+                            <tr>
+                                <td style="color: #666;" valign="top"><strong>地點：</strong></td>
+                                <td>
+                                    香港會議展覽中心 1 號演講廳<br>
+                                    <span style="font-size: 13px; color: #888;">(地址：香港灣仔博覽道 1 號 L1)</span>
+                                </td>
+                            </tr>
+                            
+                            ${details.title.includes('典禮') ? `
+                            <tr>
+                                <td style="color: #666;" valign="top"><strong>名額：</strong></td>
+                                <td>每位得獎者可邀請 <strong>1 位</strong> 老師或家長進場觀禮</td>
+                            </tr>` : ''}
+
+                            <tr>
+                                <td style="color: #666;" valign="top"><strong>服飾：</strong></td>
+                                <td>得獎者必須穿著由大會派發的上衣<br><span style="font-size:13px; color:#888;">(已於總評登記時派發)</span></td>
+                            </tr>
+
+                            ${details.extraInfo}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background-color: #fffaf0; border: 1px solid #ffeeba; padding: 15px; border-radius: 6px; font-size: 14px; color: #856404; margin-bottom: 20px;">
+                    <strong>📢 如未能出席：</strong>
+                    <p style="margin: 5px 0 0 0; line-height: 1.5;">
+                        須於 <strong>4 月 30 日 (四) 17:00 前</strong> 親臨資優教育學苑 411 室領取。<br>
+                        <span style="display: block; margin-top: 5px; font-weight: bold; color: #ce0000;">*逾期不予保留</span>
+                    </p>
+                </div>
+            </div>
+
+            <div style="background-color: #003366; color: #ffffff; text-align: center; font-size: 13px; line-height: 1.6; padding: 20px; border-radius: 0 0 12px 12px;">
+                <p style="margin: 0 0 10px 0;"><strong>香港新一代文化協會科學創意中心　謹啟</strong></p>
+                <p style="margin: 0;">查詢電話：2792 3639</p>
+                <p style="margin: 0;">網址：stic.newgen.org.hk</p>
+            </div>
+        `;
+
+        // 顯示彈窗
+        modal.style.display = 'flex';
+    }
+
+    // 關閉彈窗
+    function closeModal(event) {
+        if (event && event.target !== document.getElementById('detailModal') && event.target.className !== 'modal-close-btn') return;
+        document.getElementById('detailModal').style.display = 'none';
+    }
+    
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        const noResults = document.getElementById('noResults');
+        const table = document.getElementById('resultsTable');
+        tbody.innerHTML = '';
+        if (data.length === 0) {
+            noResults.style.display = 'block'; table.style.display = 'none'; return;
+        }
+        noResults.style.display = 'none'; table.style.display = 'table';
+        
+        data.forEach(row => {
+            if (row['參賽編號']) {
+                let names = [];
+                if (row['中文姓名']) names.push(row['中文姓名'].trim());
+                if (row['姓名1']) names.push(row['姓名1'].trim());
+                if (row['姓名2']) names.push(row['姓名2'].trim());
+                if (row['姓名3']) names.push(row['姓名3'].trim());
+                let displayName = names.filter(Boolean).join('<br>');
+
+                // --- 🌟 關鍵修改：空值自動轉為「詳情稍後公佈」 ---
+                let sessionHtml = '';
+                let sessionText = row['頒獎時段'] ? row['頒獎時段'].trim() : '';
+
+                if (sessionText) {
+                    // 如果 CSV 裡有寫時間，就顯示彩色標籤
+                    let badgeClass = 'badge-pending'; // 預設樣式
+                    if (sessionText.includes('頒獎儀式') && (sessionText.includes('一') || sessionText.includes('1'))) {
+                        badgeClass = 'badge-am1';
+                    } else if (sessionText.includes('頒獎儀式') && (sessionText.includes('二') || sessionText.includes('2'))) {
+                        badgeClass = 'badge-am2';
+                    } else if (sessionText.includes('頒獎典禮')) {
+                        badgeClass = 'badge-pm';
+                    }
+                    sessionHtml = `<span class="time-badge ${badgeClass}">${sessionText}</span>`;
+                } else {
+                    // 🌟 如果 CSV 這一格是空的，自動顯示這行字
+                    sessionHtml = `<span class="time-badge badge-pending">詳情稍後公佈</span>`;
+                }
+                // ---------------------------------------------
+
+                const tr = document.createElement('tr');
+
+                if (sessionText) {
+                    tr.onclick = () => showDetails(row);
+                    tr.title = "點擊查看詳細安排"; // 滑鼠移上去有提示
+                } else {
+                    tr.style.cursor = "default"; // 沒資料時滑鼠不變手型
+                }
+
+                tr.innerHTML = `
+                    <td><span class="badge-group">${row['參賽組別'] || ''}</span></td>
+                    <td><strong>${row['參賽編號'] || ''}</strong></td>
+                    <td style="line-height: 1.4;">${displayName}</td> 
+                    <td>${row['作品名稱'] || ''}</td>
+                    <td>${sessionHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        });
+    }
+
+    document.getElementById('numInput').addEventListener('keypress', e => { 
+        if (e.key === 'Enter') filterData('byId'); 
+    });
+</script>
+<div id="detailModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-container" onclick="event.stopPropagation()">
+        <button class="modal-close-btn" onclick="closeModal()">×</button>
+        <div id="modalContent" class="modal-body">
+            </div>
+    </div>
+</div>
+</body>
+</html>
