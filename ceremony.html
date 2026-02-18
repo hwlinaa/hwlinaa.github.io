@@ -203,7 +203,28 @@
     }
 
     let allData = [];
-    const csvUrl = 'data.csv'; 
+    // 使用 Google Sheet 發布連結
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ1HDP4hGRakiDtICKljEtQSwyG5cuiLFlMqAW3ZlB7t3ITCl5QOH32rlLBr-3WJNUrdNVWxaaVfm4/pub?output=csv'; 
+    let currentCategory = 'all';
+
+    Papa.parse(csvUrl, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            allData = results.data;
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('tableContainer').style.display = 'block';
+            setupFilters(allData); 
+            renderTable(allData);  
+        },
+        error: function(err) {
+            document.getElementById('loadingIndicator').innerHTML = 
+                '<span style="color:red;">⚠️ 連線失敗，請檢查網絡或重新整理。</span>';
+        }
+    });
+
+    /* const csvUrl = 'data.csv'; 
     let currentCategory = 'all';
 
     Papa.parse(csvUrl, {
@@ -218,7 +239,8 @@
             renderTable(allData);  
         }
     });
-
+    */
+   
     function setupFilters(data) {
         const categorySet = new Set();
         const prefixSet = new Set();
