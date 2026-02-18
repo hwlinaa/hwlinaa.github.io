@@ -3,7 +3,7 @@
 
 <head>
     <script>
-        // 網站全域設定 (所有時間、地點、文字都在這裡修改)
+        // 網站全域設定
         const SITE_CONFIG = {
             // 1. 基本資訊
             title: "第28屆香港青少年科技創新大賽",
@@ -11,30 +11,30 @@
             ceremonyDate: "2026 年 3 月 22 日 (星期日)",
             venue: "香港會議展覽中心 1 號演講廳",
             venueAddress: "(地址：香港灣仔博覽道 1 號 L1)",
-
-            // 2. 截止與連結
             deadLine: "4 月 30 日 (四) 17:00",
+
+            // 2. 連結
             fullUrl: "https://results.stic.newgen.org.hk/",
             csvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ1HDP4hGRakiDtICKljEtQSwyG5cuiLFlMqAW3ZlB7t3ITCl5QOH32rlLBr-3WJNUrdNVWxaaVfm4/pub?output=csv",
 
-            // 3. 各時段具體安排 (修改這裡即可更新彈出視窗內容)
+            // 3. 各時段具體安排
             sessions: {
-                // A. 上午頒獎儀式 (第一節)
+                // A. 第一節頒獎儀式
                 morning_1: {
                     time: "11:30 - 12:15",
                     reg: "11:30"
                 },
-                // B. 上午頒獎儀式 (第二節)
+                // B. 第二節頒獎儀式
                 morning_2: {
                     time: "12:15 - 13:00",
                     reg: "12:15"
                 },
-                // C. 下午頒獎典禮 (一般得獎者)
+                // C. 頒獎典禮 (一般得獎者)
                 afternoon_normal: {
                     time: "15:30 - 17:30",
                     reg: "14:30"
                 },
-                // D. 下午頒獎典禮 (設展)
+                // D. 頒獎典禮 (設展)
                 afternoon_exhibition: {
                     time: "15:30 - 17:30",
                     reg: "13:45"
@@ -588,7 +588,7 @@
     </div>
 
     <script>
-        // 🔧 初始化頁面文字
+        // 初始化頁面文字
         function initPageText() {
             document.title = SITE_CONFIG.title + " - " + SITE_CONFIG.subTitle;
             document.getElementById('navTitle').textContent = SITE_CONFIG.title;
@@ -686,7 +686,7 @@
             filterData();
         }
 
-        // 🚀 顯示詳細資訊 (使用 SITE_CONFIG 中的時間)
+        // 顯示詳細資訊 (使用 SITE_CONFIG 中的時間)
         function showDetails(row) {
             const modal = document.getElementById('detailModal');
             const content = document.getElementById('modalContent');
@@ -711,7 +711,7 @@
                 borderColor: "#ffcccc"
             };
 
-            // 1. 設展 (一等獎)
+            // 1. 設展
             if (session.includes('設展')) {
                 details.title = "頒獎典禮 (設展)";
                 details.regTime = SITE_CONFIG.sessions.afternoon_exhibition.reg;
@@ -725,11 +725,11 @@
                     </td>
                 </tr>`;
             }
-            // 2. 頒獎典禮 (一般)
+            // 2. 頒獎典禮
             else if (session.includes('頒獎典禮')) {
-                // 使用預設值 (下午一般)
+                // 使用預設值
             }
-            // 3. 頒獎儀式 (上午)
+            // 3. 頒獎儀式
             else if (session.includes('頒獎儀式')) {
                 details.title = "頒獎儀式";
                 details.eventTimeLabel = "時間";
