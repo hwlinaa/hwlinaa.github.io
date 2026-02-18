@@ -294,9 +294,6 @@
         if (row['姓名3']) names.push(row['姓名3'].trim());
         let displayName = names.filter(Boolean).join('、');
 
-        // 🟢 定義不同時段的詳細內容
-        let timeDetails = {};
-
         let details = {
             title: "頒獎典禮",
             subTitle: "出席通知",
@@ -304,7 +301,7 @@
             eventTimeLabel: "典禮",
             eventTime: "15:30 - 17:30",
             extraInfo: "", // 用於放「設展」或「流程」的額外資訊
-            themeColor: "#ce0000", // 預設紅色 (下午)
+            themeColor: "#ce0000", // 預設紅色
             bgColor: "#fff5f5",    // 預設淺紅背景
             borderColor: "#ffcccc"
         };
@@ -316,10 +313,9 @@
         // 1. 🏆 一等獎 / 設展 (下午) - 根據您的指示偵測「設展」字眼
         if (session.includes('設展')) {
             details.title = "頒獎典禮 (設展)";
-            details.regTime = "13:45"; // 一等獎報到時間
+            details.regTime = "13:45";
             details.eventTime = "15:30 - 17:30";
             
-            // 增加一等獎專屬的提示文字 (參考電郵)
             details.extraInfo = `
                 <tr>
                     <td colspan="2" style="padding-top:10px; font-size:14px; color:#ff6100; line-height:1.5;">
@@ -331,29 +327,28 @@
             `;
         }
         
-        // 2. 📅 一般頒獎典禮 (下午)
+        // 2. 📅 頒獎典禮
         else if (session.includes('頒獎典禮')) {
             details.title = "頒獎典禮";
-            details.regTime = "14:30"; // 一般報到時間
+            details.regTime = "14:30";
             details.eventTime = "15:30 - 17:30";
         }
         
-        // 3. ☀️ 頒獎儀式 (上午)
+        // 3. ☀️ 頒獎儀式
         else if (session.includes('頒獎儀式')) {
             details.title = "頒獎儀式";
-            details.eventTimeLabel = "時間"; // 上午叫「時間」不叫「典禮」
-            details.themeColor = "#ce0000"; // 根據電郵，上午也是用紅色強調
+            details.eventTimeLabel = "時間";
+            details.themeColor = "#003366";
             
             // 判斷是第一節還是第二節
             if (session.includes('一') || session.includes('1')) {
-                details.eventTime = "10:00 - 10:45"; // 假設第一節時間 (請自行校對)
+                details.eventTime = "11:30 - 12:15";
             } else {
-                details.eventTime = "11:30 - 12:15"; // 參考電郵的第二節時間
+                details.eventTime = "12:15 - 13:00";
             }
             
-            details.regTime = "需於儀式開始前 30 分鐘報到"; // 或寫死時間
-            
-            // 上午儀式顯示「流程」而非名額
+            details.regTime = "儀式時間內報到";
+        
             details.extraInfo = `
                 <tr>
                     <td style="color: #666;" valign="top"><strong>流程：</strong></td>
