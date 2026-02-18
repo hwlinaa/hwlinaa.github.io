@@ -273,7 +273,7 @@
             margin-bottom: 4px;
         }
 
-        /* ⏰ 時段標籤樣式 */
+        /* 時段標籤樣式 */
         .time-badge {
             display: inline-block;
             padding: 8px 16px;
@@ -302,13 +302,12 @@
             box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
         }
 
-        /* 🆕 新增：「詳情稍後公佈」的標籤樣式 (灰色、虛線框，感覺很期待) */
+        /* 「詳情稍後公佈」的標籤樣式 (灰色、虛線框) */
         .badge-pending {
             background: #F9FAFB;
             color: #6B7280;
             border: 1px dashed #D1D5DB;
             font-weight: normal;
-            /* 不用太粗，低調一點 */
         }
 
         .no-results {
@@ -399,7 +398,7 @@
             }
         }
 
-        /* --- 🆕 彈出視窗 (Modal) 樣式 --- */
+        /* --- 彈出視窗樣式 --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -577,7 +576,8 @@
             }
         });
 
-        /* const csvUrl = 'data.csv'; 
+        /*
+        const csvUrl = 'data.csv'; 
         let currentCategory = 'all';
     
         Papa.parse(csvUrl, {
@@ -655,7 +655,7 @@
             filterData();
         }
 
-        // 🆕 顯示詳細資訊的函數
+        // 顯示詳細資訊的函數
         function showDetails(row) {
             const modal = document.getElementById('detailModal');
             const content = document.getElementById('modalContent');
@@ -682,10 +682,10 @@
             };
 
             // ---------------------------------------------------------
-            // 🟢 核心判斷邏輯 (根據 CSV 關鍵字切換內容)
+            // 核心判斷邏輯
             // ---------------------------------------------------------
 
-            // 1. 🏆 一等獎 / 設展 (下午) - 根據您的指示偵測「設展」字眼
+            // 1. 🏆 偵測「設展」字眼
             if (session.includes('設展')) {
                 details.title = "頒獎典禮 (設展)";
                 details.regTime = "13:45";
@@ -734,11 +734,11 @@
             `;
             }
 
-            // ❌ 如果時段是空的，不彈出視窗
+            // 如果時段是空的，不彈出視窗
             if (!session) return;
 
             // ---------------------------------------------------------
-            // 📄 生成 HTML (完全參考您提供的電郵樣式)
+            // HTML
             // ---------------------------------------------------------
             content.innerHTML = `
             <div style="background-color: #003366; padding: 25px 20px; text-align: center; border-radius: 12px 12px 0 0;">
@@ -849,12 +849,12 @@
                     if (row['姓名3']) names.push(row['姓名3'].trim());
                     let displayName = names.filter(Boolean).join('<br>');
 
-                    // --- 🌟 關鍵修改：空值自動轉為「詳情稍後公佈」 ---
+                    // --- 空值自動轉為「詳情稍後公佈」 ---
                     let sessionHtml = '';
                     let sessionText = row['頒獎時段'] ? row['頒獎時段'].trim() : '';
 
                     if (sessionText) {
-                        // 如果 CSV 裡有寫時間，就顯示彩色標籤
+                        // 如有時間，就顯示彩色標籤
                         let badgeClass = 'badge-pending'; // 預設樣式
                         if (sessionText.includes('頒獎儀式') && (sessionText.includes('一') || sessionText.includes('1'))) {
                             badgeClass = 'badge-am1';
@@ -865,7 +865,7 @@
                         }
                         sessionHtml = `<span class="time-badge ${badgeClass}">${sessionText}</span>`;
                     } else {
-                        // 🌟 如果 CSV 這一格是空的，自動顯示這行字
+                        // 🌟 如果這一格是空的，自動顯示這行字
                         sessionHtml = `<span class="time-badge badge-pending">詳情稍後公佈</span>`;
                     }
                     // ---------------------------------------------
