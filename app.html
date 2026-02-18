@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港新一代 App</title>
+
+    <link rel="icon" href="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.gif" type="image/gif">
+
+    <style>
+        /* 清除所有預設邊距 */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            /* 防止出現雙重滾動條 */
+            background-color: #f3f3f3;
+        }
+
+        /* Iframe 設定：絕對全屏 */
+        iframe {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+
+        /* 🔙 懸浮返回按鈕樣式 */
+        .back-btn {
+            position: fixed;
+            bottom: 30px;
+            /* 👇 改為 bottom，距離底部 30px */
+            left: 20px;
+            /* 距離左邊 20px */
+            background-color: rgba(0, 51, 102, 0.85);
+            /* 深藍色，稍微不透明一點 */
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            /* 加大一點點，方便手指點擊 */
+            border-radius: 30px;
+            font-family: -apple-system, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            /* 加深陰影，讓它浮起來 */
+            z-index: 9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            /* 加個細邊框更有質感 */
+        }
+
+        .back-btn:hover {
+            background-color: #003366;
+            /* 滑鼠懸停變實色 */
+            transform: translateY(-2px);
+            /* 懸停時微微上浮 */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 手機版按鈕調整 */
+        @media (max-width: 600px) {
+            .back-btn {
+                bottom: 40px;
+                /* 👇 手機版稍微提高，避開 iPhone 底部 Home Bar */
+                left: 15px;
+                padding: 10px 16px;
+                font-size: 14px;
+                opacity: 0.9;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">
+        <span>⬅</span> 返回大賽頁面
+    </a>
+
+    <iframe id="JotFormIFrame-243098567658474" title="香港新一代 App" allow="geolocation; microphone; camera"
+        src="https://www.jotform.com/app/243098567658474?appEmbedded=1">
+    </iframe>
+
+</body>
+
+</html>
