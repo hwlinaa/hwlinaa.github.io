@@ -19,7 +19,7 @@
     <meta property="og:title" content="香港青少年科技創新大賽 - 得獎名單">
     <meta property="og:description" content="輸入參賽編號，查詢比賽得獎結果。">
     <meta property="og:image" content="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png">
-    <meta property="og:url" content="https://results.stic.newgen.org.hk/awards.html">
+    <meta property="og:url" content="https://results.stic.hkngca.org/awards.html">
     <meta property="og:type" content="website">
 
     <link rel="icon" href="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.gif" type="image/gif">
@@ -389,7 +389,7 @@
                 text-align: left;
                 width: 100%;
             }
-
+            /*
             td:nth-child(5) {
                 order: -1;
                 text-align: center;
@@ -406,6 +406,22 @@
                 width: auto;
                 margin: 2px;
             }
+            */
+
+            td:nth-child(5) { 
+                order: -1; 
+                text-align: center; 
+                margin-bottom: 10px; 
+                padding-bottom: 10px; 
+                border-bottom: 1px dashed #e2e8f0;
+                /* 讓多個獎項置中並排，而不是強制換行 */
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 5px;
+            }
+            /* 讓標籤在手機上保持適當大小，不強制 100% 寬度 */
+            .time-badge { font-size: 1.05em; display: inline-block; width: auto; margin: 0; }
 
             td:nth-child(1),
             td:nth-child(2) {
