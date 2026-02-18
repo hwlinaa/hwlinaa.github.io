@@ -7,6 +7,7 @@
     <meta property="og:image" content="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png">
     <meta property="og:url" content="https://results.stic.newgen.org.hk/">
     <meta property="og:type" content="website">
+    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第28屆香港青少年科技創新大賽 - 頒獎安排</title>
@@ -548,6 +549,14 @@
         </div>
     </div>
 
+    <div id="detailModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeModal()">×</button>
+            <div id="modalContent" class="modal-body">
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('open');
@@ -572,7 +581,10 @@
             },
             error: function (err) {
                 document.getElementById('loadingIndicator').innerHTML =
-                    '<span style="color:red;">⚠️ 連線失敗，請檢查網絡或重新整理。</span>';
+                    '<div style="text-align:center; color:red;">' +
+                    '⚠️ 連線不穩定，無法載入資料。<br>' +
+                    '<button onclick="location.reload()" style="margin-top:10px; padding:8px 20px; border-radius:5px; border:1px solid #ccc; background:white;">點此重新整理</button>' +
+                    '</div>';
             }
         });
 
@@ -663,11 +675,11 @@
 
             // 姓名組合
             let names = [];
-            if (row['中文姓名']) names.push(row['中文姓名']);
-            if (row['姓名1']) names.push(row['姓名1']);
-            if (row['姓名2']) names.push(row['姓名2'].trim());
-            if (row['姓名3']) names.push(row['姓名3'].trim());
-            let displayName = names.filter(Boolean).join('、');
+            if (row['中文姓名'] && row['中文姓名'].trim()) names.push(row['中文姓名'].trim());
+            if (row['姓名1'] && row['姓名1'].trim()) names.push(row['姓名1'].trim());
+            if (row['姓名2'] && row['姓名2'].trim()) names.push(row['姓名2'].trim());
+            if (row['姓名3'] && row['姓名3'].trim()) names.push(row['姓名3'].trim());
+            let displayName = names.join('、');
 
             let details = {
                 title: "頒獎典禮",
@@ -842,13 +854,20 @@
 
             data.forEach(row => {
                 if (row['參賽編號']) {
+                    /*
                     let names = [];
                     if (row['中文姓名']) names.push(row['中文姓名'].trim());
                     if (row['姓名1']) names.push(row['姓名1'].trim());
                     if (row['姓名2']) names.push(row['姓名2'].trim());
                     if (row['姓名3']) names.push(row['姓名3'].trim());
                     let displayName = names.filter(Boolean).join('<br>');
-
+                    */
+                    let names = [];
+                    if (row['中文姓名'] && row['中文姓名'].trim()) names.push(row['中文姓名'].trim());
+                    if (row['姓名1'] && row['姓名1'].trim()) names.push(row['姓名1'].trim());
+                    if (row['姓名2'] && row['姓名2'].trim()) names.push(row['姓名2'].trim());
+                    if (row['姓名3'] && row['姓名3'].trim()) names.push(row['姓名3'].trim());
+                    let displayName = names.join('、');
                     // --- 空值自動轉為「詳情稍後公佈」 ---
                     let sessionHtml = '';
                     let sessionText = row['頒獎時段'] ? row['頒獎時段'].trim() : '';
@@ -893,15 +912,10 @@
 
         document.getElementById('numInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') filterData('byId');
+            document.getElementById('numInput').blur(); // 收起手機鍵盤
         });
     </script>
-    <div id="detailModal" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-container" onclick="event.stopPropagation()">
-            <button class="modal-close-btn" onclick="closeModal()">×</button>
-            <div id="modalContent" class="modal-body">
-            </div>
-        </div>
-    </div>
+
 </body>
 
 </html>
