@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>參賽證書查詢系統</title>
+    <style>
+        :root {
+            --primary-color: #1F4E78;
+            --secondary-color: #f4f7f6;
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f5; color: var(--text-color); line-height: 1.6; padding: 20px; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px; }
+        .tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; background: var(--secondary-color); border: 1px solid var(--border-color); border-bottom: none; font-weight: bold; }
+        .tab.active { background: #fff; color: var(--primary-color); border-top: 3px solid var(--primary-color); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #153857; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .alert { padding: 15px; border-radius: 4px; margin-top: 20px; display: none; }
+        .alert.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .alert.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        .result-box { margin-top: 20px; padding: 20px; border: 1px solid var(--border-color); border-radius: 4px; background-color: #fdfdfd; display: none;}
+        .result-box p { margin: 8px 0; }
+        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 15px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>參賽證書查詢系統</h2>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('verify')">驗證證書 (Verify)</div>
+        <div class="tab" onclick="switchTab('resend')">忘記驗證碼 (Resend)</div>
+    </div>
+
+    <div id="verify-section" class="tab-content active">
+        <div class="form-group">
+            <label for="token">證書驗證碼 (Token)</label>
+            <input type="text" id="token" placeholder="請輸入 12 碼英數驗證碼">
+        </div>
+        <button id="btn-verify" onclick="verifyToken()">查詢證書</button>
+        <div id="verify-msg" class="alert"></div>
+        
+        <div id="verify-result" class="result-box">
+            <h3 style="color: #28a745; margin-top:0;">✓ 驗證成功</h3>
+            <p><strong>學生姓名：</strong> <span id="r-name"></span></p>
+            <p><strong>學校名稱：</strong> <span id="r-school"></span></p>
+            <p><strong>大賽名稱：</strong> <span id="r-comp"></span></p>
+            <p><strong>簽發日期：</strong> <span id="r-date"></span></p>
+            <p><strong>證書編號：</strong> <span id="r-id"></span></p>
+            <a id="r-link" href="#" target="_blank" class="download-btn">查閱證書 PDF</a>
+        </div>
+    </div>
+
+    <div id="resend-section" class="tab-content">
+        <p style="font-size:0.9em; color:#666;">系統將核對您的報名資料，若相符將重新發送證書至您的信箱。</p>
+        <div class="form-group">
+            <label for="r-email">報名電郵地址</label>
+            <input type="email" id="req-email" placeholder="example@school.edu.hk">
+        </div>
+        <div class="form-group">
+            <label for="r-student">參賽者姓名</label>
+            <input type="text" id="req-student" placeholder="需與報名表一致">
+        </div>
+        <div class="form-group">
+            <label for="r-competition">大賽名稱</label>
+            <input type="text" id="req-competition" value="香港青少年科技創新大賽">
+        </div>
+        <button id="btn-resend" onclick="requestResend()">重發證書電郵</button>
+        <div id="resend-msg" class="alert"></div>
+    </div>
+</div>
+
+<script>
+    // 您的 Google Apps Script Web App URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        if (tabId === 'verify') {
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.getElementById('verify-section').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab')[1].classList.add('active');
+            document.getElementById('resend-section').classList.add('active');
+        }
+        clearMessages();
+    }
+
+    function clearMessages() {
+        document.getElementById('verify-msg').className = 'alert';
+        document.getElementById('resend-msg').className = 'alert';
+        document.getElementById('verify-result').style.display = 'none';
+    }
+
+    function showMessage(elementId, isSuccess, text) {
+        const el = document.getElementById(elementId);
+        el.className = isSuccess ? 'alert success' : 'alert error';
+        el.innerText = text;
+    }
+
+    async function verifyToken() {
+        const token = document.getElementById('token').value.trim();
+        if (!token) return showMessage('verify-msg', false, '請輸入驗證碼。');
+        
+        const btn = document.getElementById('btn-verify');
+        btn.disabled = true;
+        btn.innerText = '系統連線中...';
+        clearMessages();
+
+        try {
+            const response = await fetch(`${API_URL}?action=verify&token=${encodeURIComponent(token)}`);
+            
+            // [升級] 先將回傳值讀取為純文字，避免 JSON 解析直接崩潰
+            const rawText = await response.text();
+            
+            try {
+                // 嘗試將純文字解析為 JSON
+                const result = JSON.parse(rawText);
+                
+                if (result.success) {
+                    document.getElementById('verify-result').style.display = 'block';
+                    document.getElementById('r-name').innerText = result.data.name;
+                    document.getElementById('r-school').innerText = result.data.school;
+                    document.getElementById('r-comp').innerText = result.data.competition;
+                    document.getElementById('r-date').innerText = result.data.signDate;
+                    document.getElementById('r-id').innerText = result.data.certId;
+                    document.getElementById('r-link').href = result.data.certLink;
+                } else {
+                    showMessage('verify-msg', false, result.message);
+                }
+            } catch (jsonError) {
+                // 若解析失敗，代表後端回傳了 HTML (如錯誤頁面或登入畫面)
+                console.error("[系統診斷] 後端回傳非預期格式:", rawText);
+                showMessage('verify-msg', false, '後端資料解析失敗，請按 F12 開啟 Console 檢視詳細錯誤報告。');
+            }
+
+        } catch (networkError) {
+            // 捕捉跨域阻擋 (CORS) 或網路斷線
+            console.error("[系統診斷] 網路連線或跨域請求遭阻擋:", networkError);
+            showMessage('verify-msg', false, '跨域連線遭阻擋 (CORS)，請確認 API 部署權限設定。');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '查詢證書';
+        }
+    }
+
+    async function requestResend() {
+        const email = document.getElementById('req-email').value.trim();
+        const name = document.getElementById('req-student').value.trim();
+        const comp = document.getElementById('req-competition').value.trim();
+        
+        if (!email || !name || !comp) return showMessage('resend-msg', false, '請完整填寫所有欄位。');
+
+        const btn = document.getElementById('btn-resend');
+        btn.disabled = true;
+        btn.innerText = '系統核對與發送中...';
+        clearMessages();
+
+        try {
+            const response = await fetch(`${API_URL}?action=resend&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&competition=${encodeURIComponent(comp)}`);
+            const rawText = await response.text();
+            
+            try {
+                const result = JSON.parse(rawText);
+                showMessage('resend-msg', result.success, result.message);
+                if(result.success) {
+                    document.getElementById('req-email').value = '';
+                    document.getElementById('req-student').value = '';
+                }
+            } catch (jsonError) {
+                console.error("[系統診斷] 後端回傳非預期格式:", rawText);
+                showMessage('resend-msg', false, '後端資料解析失敗，請按 F12 開啟 Console 檢視詳細錯誤報告。');
+            }
+            
+        } catch (networkError) {
+            console.error("[系統診斷] 網路連線或跨域請求遭阻擋:", networkError);
+            showMessage('resend-msg', false, '跨域連線遭阻擋 (CORS)，請確認 API 部署權限設定。');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '重發證書電郵';
+        }
+    }
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromUrl = urlParams.get('token');
+        if (tokenFromUrl) {
+            document.getElementById('token').value = tokenFromUrl;
+            verifyToken();
+        }
+    };
+</script>
+
+</body>
+</html>
