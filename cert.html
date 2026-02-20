@@ -1,404 +1,69 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>證書查詢系統 - 香港新一代文化協會</title>
-
+    <title>證書線上查詢系統 - 香港新一代文化協會</title>
     <script>
-        const SITE_CONFIG = {
-            title: "香港新一代文化協會",
-            subTitle: "證書查詢系統"
-        };
+        const SITE_CONFIG = { title: "香港新一代文化協會", subTitle: "證書線上查詢系統" };
     </script>
-
     <style>
-        :root {
-            --primary-blue: #0A3D91;
-            --accent-orange: #F28C28;
-            --bg-color: #F4F7FB;
-            --card-bg: #FFFFFF;
-            --text-main: #333333;
-            --text-muted: #666666;
-            --border-radius: 12px;
-            --menu-bg: #072a66;
-            --border-color: #cbd5e1;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px 10px;
-            line-height: 1.6;
-        }
-
-        /* 導航列與選單樣式 */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 700px;
-            margin: 0 auto 20px auto;
-            padding: 0 10px;
-        }
-
-        .logo-text {
-            font-weight: bold;
-            color: var(--primary-blue);
-            font-size: 1.1rem;
-        }
-
-        .menu-btn {
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--primary-blue);
-            background: none;
-            border: none;
-            padding: 5px;
-        }
-
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -280px;
-            width: 260px;
-            height: 100%;
-            background-color: var(--menu-bg);
-            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
-            transition: right 0.3s ease;
-            z-index: 1000;
-            padding-top: 60px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .side-menu.open {
-            right: 0;
-        }
-
-        .side-menu a {
-            padding: 15px 25px;
-            text-decoration: none;
-            font-size: 1.1rem;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.2s;
-        }
-
-        .side-menu a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding-left: 35px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            color: white;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 900;
-            display: none;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-
-        /* 主容器 */
-        .container {
-            max-width: 700px;
-            margin: auto;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        }
-
-        .header-title {
-            text-align: center;
-            border-bottom: 2px solid #edf2f7;
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-        }
-
-        .header-title h1 {
-            color: var(--primary-blue);
-            font-size: 1.6rem;
-            margin: 0 0 10px 0;
-        }
-
-        /* 標籤頁 (Tabs) 設計 */
-        .tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #edf2f7;
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-weight: 600;
-            transition: all 0.2s;
-            border-bottom: 3px solid transparent;
-        }
-
-        .tab.active {
-            color: var(--primary-blue);
-            border-bottom: 3px solid var(--primary-blue);
-        }
-
-        .tab:hover:not(.active) {
-            color: var(--primary-blue);
-            background-color: #f8fafc;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 表單元素 */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="number"],
-        select.form-select {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background-color: white;
-            box-sizing: border-box;
-            outline: none;
-            transition: all 0.2s;
-            color: var(--text-main);
-        }
-
-        select.form-select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 16px;
-            padding-right: 40px;
-        }
-
-        /* 複合式賽事輸入區塊 */
-        .composite-input-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .composite-input-group span {
-            font-weight: bold;
-            color: var(--text-main);
-            white-space: nowrap;
-        }
-
-        .composite-input-group input[type="number"] {
-            width: 80px;
-            text-align: center;
-        }
-
-        .composite-input-group select {
-            flex: 1;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.2);
-        }
-
-        /* 隱藏 Number Input 的上下箭頭 */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        button.btn-primary {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-
-        button.btn-primary:hover {
-            background-color: #072a66;
-        }
-
-        button.btn-primary:disabled {
-            background-color: #cbd5e1;
-            cursor: not-allowed;
-        }
-
-        /* 提示訊息與結果區塊 */
-        .notice-box {
-            background-color: #ebf8ff;
-            border-left: 5px solid #2b6cb0;
-            padding: 15px;
-            margin-bottom: 25px;
-            color: #2c5282;
-            font-size: 0.95rem;
-            border-radius: 4px;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: none;
-            font-weight: 500;
-        }
-
-        .alert.success {
-            background-color: #DEF7EC;
-            color: #03543F;
-            border: 1px solid #84E1BC;
-            display: block;
-        }
-
-        .alert.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-
-        .result-box {
-            margin-top: 25px;
-            padding: 25px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background-color: #f8fafc;
-            display: none;
-        }
-
-        .result-box p {
-            margin: 10px 0;
-            font-size: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .result-box p strong {
-            width: 100px;
-            color: var(--text-muted);
-        }
-
-        .result-box p span {
-            color: var(--text-main);
-            font-weight: 500;
-            flex: 1;
-        }
-
-        .download-btn {
-            display: block;
-            margin-top: 20px;
-            padding: 12px 15px;
-            background-color: #046c4e;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .download-btn:hover {
-            background-color: #03543f;
-        }
-
-        /* 響應式設計 */
+        :root { --primary-blue: #0A3D91; --accent-orange: #F28C28; --bg-color: #F4F7FB; --card-bg: #FFFFFF; --text-main: #333333; --text-muted: #666666; --border-radius: 12px; --menu-bg: #072a66; --border-color: #cbd5e1; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px 10px; line-height: 1.6; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 700px; margin: 0 auto 20px auto; padding: 0 10px; }
+        .logo-text { font-weight: bold; color: var(--primary-blue); font-size: 1.1rem; }
+        .menu-btn { font-size: 1.8rem; cursor: pointer; color: var(--primary-blue); background: none; border: none; padding: 5px; }
+        .side-menu { position: fixed; top: 0; right: -280px; width: 260px; height: 100%; background-color: var(--menu-bg); box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); transition: right 0.3s ease; z-index: 1000; padding-top: 60px; display: flex; flex-direction: column; }
+        .side-menu.open { right: 0; }
+        .side-menu a { padding: 15px 25px; text-decoration: none; font-size: 1.1rem; color: white; border-bottom: 1px solid rgba(255, 255, 255, 0.1); transition: 0.2s; }
+        .side-menu a:hover { background-color: rgba(255, 255, 255, 0.1); padding-left: 35px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: white; cursor: pointer; background: none; border: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 900; display: none; }
+        .overlay.show { display: block; }
+        .container { max-width: 700px; margin: auto; background: var(--card-bg); padding: 30px; border-radius: var(--border-radius); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); }
+        .header-title { text-align: center; border-bottom: 2px solid #edf2f7; padding-bottom: 20px; margin-bottom: 25px; }
+        .header-title h1 { color: var(--primary-blue); font-size: 1.6rem; margin: 0 0 10px 0; }
+        .tabs { display: flex; margin-bottom: 25px; border-bottom: 2px solid #edf2f7; }
+        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: var(--text-muted); font-weight: 600; transition: all 0.2s; border-bottom: 3px solid transparent; }
+        .tab.active { color: var(--primary-blue); border-bottom: 3px solid var(--primary-blue); }
+        .tab:hover:not(.active) { color: var(--primary-blue); background-color: #f8fafc; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        input[type="text"], input[type="email"], input[type="number"], select.form-select { width: 100%; padding: 12px; font-size: 16px; border: 2px solid var(--border-color); border-radius: 8px; background-color: white; box-sizing: border-box; outline: none; transition: all 0.2s; color: var(--text-main); }
+        select.form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
+        .composite-input-group { display: flex; align-items: center; gap: 10px; }
+        .composite-input-group span { font-weight: bold; color: var(--text-main); white-space: nowrap; }
+        .composite-input-group input[type="number"] { width: 80px; text-align: center; }
+        .composite-input-group select { flex: 1; }
+        input:focus, select:focus { border-color: var(--accent-orange); box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.2); }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        button.btn-primary { width: 100%; padding: 14px; background-color: var(--primary-blue); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        button.btn-primary:hover { background-color: #072a66; }
+        button.btn-primary:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+        .notice-box { background-color: #ebf8ff; border-left: 5px solid #2b6cb0; padding: 15px; margin-bottom: 25px; color: #2c5282; font-size: 0.95rem; border-radius: 4px; }
+        .alert { padding: 15px; border-radius: 8px; margin-top: 20px; display: none; font-weight: 500; }
+        .alert.success { background-color: #DEF7EC; color: #03543F; border: 1px solid #84E1BC; display: block; }
+        .alert.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        .result-box { margin-top: 25px; padding: 25px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc; display: none; }
+        .result-box p { margin: 10px 0; font-size: 1rem; display: flex; flex-wrap: wrap; }
+        .result-box p strong { width: 100px; color: var(--text-muted); }
+        .result-box p span { color: var(--text-main); font-weight: 500; flex: 1; }
+        .download-btn { display: block; margin-top: 20px; padding: 12px 15px; background-color: #046c4e; color: #fff; text-decoration: none; border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s; }
+        .download-btn:hover { background-color: #03543f; }
         @media (max-width: 600px) {
-            .container {
-                padding: 20px 15px;
-            }
-
-            .header-title h1 {
-                font-size: 1.4rem;
-            }
-
-            .result-box p {
-                flex-direction: column;
-            }
-
-            .result-box p strong {
-                width: 100%;
-                margin-bottom: 2px;
-            }
-
-            .composite-input-group {
-                flex-wrap: wrap;
-            }
-
-            .composite-input-group select {
-                width: 100%;
-                flex: none;
-            }
+            .container { padding: 20px 15px; }
+            .header-title h1 { font-size: 1.4rem; }
+            .result-box p { flex-direction: column; }
+            .result-box p strong { width: 100%; margin-bottom: 2px; }
+            .composite-input-group { flex-wrap: wrap; }
+            .composite-input-group select { width: 100%; flex: none; }
         }
     </style>
 </head>
-
 <body>
 
     <div class="navbar">
@@ -411,7 +76,7 @@
     <div class="side-menu" id="sideMenu">
         <button class="close-btn" onclick="toggleMenu()">×</button>
         <a href="index.html">證書查詢</a>
-        <a href="https://stic.newgen.org.hk" target="_blank">大賽網站</a>
+        <a href="https://stic.newgen.org.hk" target="_blank">活動網站</a>
         <a href="https://app.jotform.com/243098567658474" target="_blank">新一代 App</a>
         <a href="https://stic.newgen.org.hk/聯絡我們/">聯絡我們</a>
     </div>
@@ -440,12 +105,14 @@
             <div id="verify-msg" class="alert"></div>
 
             <div id="verify-result" class="result-box">
-                <h3 style="color: #046c4e; margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">驗證成功
-                </h3>
+                <h3 style="color: #046c4e; margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">驗證成功</h3>
                 <p><strong>姓名</strong> <span id="r-name"></span></p>
                 <p><strong>所屬機構</strong> <span id="r-school"></span></p>
                 <p><strong>身分角色</strong> <span id="r-role"></span></p>
-                <p><strong>活動名稱</strong> <span id="r-comp"></span></p>
+                <p><strong>活動名稱</strong> <span id="r-event"></span></p>
+                <p id="row-group" style="display:none;"><strong>參加組別</strong> <span id="r-group"></span></p>
+                <p id="row-award" style="display:none;"><strong>獲得獎項</strong> <span id="r-award" style="color:#0A3D91; font-weight:bold;"></span></p>
+                
                 <p><strong>簽發日期</strong> <span id="r-date"></span></p>
                 <p><strong>證書編號</strong> <span id="r-id"></span></p>
                 <a id="r-link" href="#" target="_blank" class="download-btn">查閱電子證書 PDF</a>
@@ -461,7 +128,7 @@
                 <input type="email" id="req-email" placeholder="需與登記資料一致">
             </div>
             <div class="form-group">
-                <label for="req-student">中文姓名</label>
+                <label for="req-student">姓名 (參賽者 / 義工 / 幹事)</label>
                 <input type="text" id="req-student" placeholder="需與登記資料一致">
             </div>
             <div class="form-group">
@@ -471,10 +138,10 @@
                     <input type="number" id="req-edition" placeholder="例: 28" min="1" max="99"
                         oninput="this.value=this.value.replace(/[^0-9]/g,'');">
                     <span>屆</span>
-                    <select id="req-comp-base" class="form-select">
+                    <select id="req-event-base" class="form-select">
                         <option value="香港青少年科技創新大賽">香港青少年科技創新大賽</option>
                         <option value="香港青少年航天創新大賽">香港青少年航天創新大賽</option>
-                        <option value="英才盃—STEAM教育挑戰賽">英才盃—STEAM教育挑戰賽</option>
+                        <option value="「英才盃—STEAM教育挑戰賽」">「英才盃—STEAM教育挑戰賽」</option>
                     </select>
                 </div>
             </div>
@@ -484,20 +151,17 @@
     </div>
 
     <script>
-        // 初始化頁面文字
         function initPageText() {
             document.getElementById('navTitle').textContent = SITE_CONFIG.title;
             document.getElementById('mainTitle').textContent = SITE_CONFIG.subTitle;
         }
         initPageText();
 
-        // 側邊選單控制
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('show');
         }
 
-        // 您的 Google Apps Script Web App URL
         const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
 
         function switchTab(tabId) {
@@ -550,7 +214,25 @@
                         document.getElementById('r-name').innerText = result.data.name;
                         document.getElementById('r-school').innerText = result.data.school;
                         document.getElementById('r-role').innerText = result.data.role;
-                        document.getElementById('r-comp').innerText = result.data.eventName;
+                        document.getElementById('r-event').innerText = result.data.eventName;
+                        
+                        // [新增] 智慧隱藏邏輯：有資料才顯示，無資料則隱藏該行
+                        const groupRow = document.getElementById('row-group');
+                        if (result.data.group) {
+                            document.getElementById('r-group').innerText = result.data.group;
+                            groupRow.style.display = 'flex';
+                        } else {
+                            groupRow.style.display = 'none';
+                        }
+
+                        const awardRow = document.getElementById('row-award');
+                        if (result.data.award) {
+                            document.getElementById('r-award').innerText = result.data.award;
+                            awardRow.style.display = 'flex';
+                        } else {
+                            awardRow.style.display = 'none';
+                        }
+
                         document.getElementById('r-date').innerText = result.data.signDate;
                         document.getElementById('r-id').innerText = result.data.certId;
                         document.getElementById('r-link').href = result.data.certLink;
@@ -575,7 +257,7 @@
             const email = document.getElementById('req-email').value.trim();
             const name = document.getElementById('req-student').value.trim();
             const edition = document.getElementById('req-edition').value.trim();
-            const baseName = document.getElementById('req-comp-base').value.trim();
+            const baseName = document.getElementById('req-event-base').value.trim();
 
             if (!email || !name) {
                 return showMessage('resend-msg', false, '請填寫登記電郵與姓名。');
@@ -585,7 +267,7 @@
                 return showMessage('resend-msg', false, '請輸入正確的活動屆數（數字）。');
             }
 
-            const fullCompetitionName = `第${edition}屆${baseName}`;
+            const fullEventName = `第${edition}屆${baseName}`;
 
             const btn = document.getElementById('btn-resend');
             btn.disabled = true;
@@ -593,7 +275,7 @@
             clearMessages();
 
             try {
-                const response = await fetch(`${API_URL}?action=resend&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&competition=${encodeURIComponent(fullCompetitionName)}`);
+                const response = await fetch(`${API_URL}?action=resend&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&event=${encodeURIComponent(fullEventName)}`);
                 const rawText = await response.text();
 
                 try {
@@ -630,5 +312,4 @@
         };
     </script>
 </body>
-
 </html>
