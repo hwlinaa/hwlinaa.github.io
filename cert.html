@@ -3,206 +3,621 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>參賽證書查詢系統</title>
+    <title>參賽證書線上查詢系統 - 香港新一代文化協會</title>
+    
+    <script>
+        // 網站全域設定，去特定賽事化，適用於所有大賽
+        const SITE_CONFIG = {
+            title: "香港新一代文化協會",
+            subTitle: "參賽證書線上查詢系統"
+        };
+    </script>
+
     <style>
         :root {
-            --primary-color: #1F4E78;
-            --secondary-color: #f4f7f6;
-            --text-color: #333;
-            --border-color: #ddd;
+            --primary-blue: #0A3D91;
+            --accent-orange: #F28C28;
+            --bg-color: #F4F7FB;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-radius: 12px;
+            --menu-bg: #072a66;
+            --border-color: #cbd5e1;
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #eef2f5; color: var(--text-color); line-height: 1.6; padding: 20px; }
-        .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h2 { color: var(--primary-color); text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .tabs { display: flex; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
-        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; background: var(--secondary-color); border: 1px solid var(--border-color); border-bottom: none; font-weight: bold; }
-        .tab.active { background: #fff; color: var(--primary-color); border-top: 3px solid var(--primary-color); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #153857; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        .alert { padding: 15px; border-radius: 4px; margin-top: 20px; display: none; }
-        .alert.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
-        .alert.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
-        .result-box { margin-top: 20px; padding: 20px; border: 1px solid var(--border-color); border-radius: 4px; background-color: #fdfdfd; display: none;}
-        .result-box p { margin: 8px 0; }
-        .download-btn { display: inline-block; margin-top: 15px; padding: 10px 15px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 4px; text-align: center; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 10px;
+            line-height: 1.6;
+        }
+
+        /* 導航列與選單樣式 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            padding: 0 10px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        .menu-btn {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--primary-blue);
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 260px;
+            height: 100%;
+            background-color: var(--menu-bg);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.open {
+            right: 0;
+        }
+
+        .side-menu a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.2s;
+        }
+
+        .side-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 35px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .header-title {
+            text-align: center;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .header-title h1 {
+            color: var(--primary-blue);
+            font-size: 1.6rem;
+            margin: 0 0 10px 0;
+        }
+
+        /* 標籤頁 (Tabs) 設計 */
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #edf2f7;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary-blue);
+            border-bottom: 3px solid var(--primary-blue);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--primary-blue);
+            background-color: #f8fafc;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 表單元素 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        input[type="text"], 
+        input[type="email"],
+        input[type="number"],
+        select.form-select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        select.form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        /* 複合式賽事輸入區塊 */
+        .composite-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .composite-input-group span {
+            font-weight: bold;
+            color: var(--text-main);
+            white-space: nowrap;
+        }
+
+        .composite-input-group input[type="number"] {
+            width: 80px;
+            text-align: center;
+        }
+
+        .composite-input-group select {
+            flex: 1;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(242, 140, 40, 0.2);
+        }
+
+        /* 隱藏 Number Input 的上下箭頭 */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        button.btn-primary {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        button.btn-primary:hover {
+            background-color: #072a66;
+        }
+
+        button.btn-primary:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* 提示訊息與結果區塊 */
+        .notice-box {
+            background-color: #ebf8ff;
+            border-left: 5px solid #2b6cb0;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #2c5282;
+            font-size: 0.95rem;
+            border-radius: 4px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background-color: #DEF7EC;
+            color: #03543F;
+            border: 1px solid #84E1BC;
+            display: block;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            display: none;
+        }
+
+        .result-box p {
+            margin: 10px 0;
+            font-size: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .result-box p strong {
+            width: 100px;
+            color: var(--text-muted);
+        }
+
+        .result-box p span {
+            color: var(--text-main);
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .download-btn {
+            display: block;
+            margin-top: 20px;
+            padding: 12px 15px;
+            background-color: #046c4e;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: #03543f;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+            .header-title h1 {
+                font-size: 1.4rem;
+            }
+            .result-box p {
+                flex-direction: column;
+            }
+            .result-box p strong {
+                width: 100%;
+                margin-bottom: 2px;
+            }
+            .composite-input-group {
+                flex-wrap: wrap;
+            }
+            .composite-input-group select {
+                width: 100%;
+                flex: none;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>參賽證書查詢系統</h2>
-    
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('verify')">驗證證書 (Verify)</div>
-        <div class="tab" onclick="switchTab('resend')">忘記驗證碼 (Resend)</div>
+    <div class="navbar">
+        <div class="logo-text" id="navTitle"></div>
+        <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
 
-    <div id="verify-section" class="tab-content active">
-        <div class="form-group">
-            <label for="token">證書驗證碼 (Token)</label>
-            <input type="text" id="token" placeholder="請輸入 12 碼英數驗證碼">
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="side-menu" id="sideMenu">
+        <button class="close-btn" onclick="toggleMenu()">×</button>
+        <a href="index.html">入圍總評名單</a>
+        <a href="ceremony.html">頒獎安排</a>
+        <a href="awards.html">得獎名單</a>
+        <a href="cert.html">參賽證書查詢</a>
+        <a href="https://stic.newgen.org.hk" target="_blank">大賽網站</a>
+        <a href="https://app.jotform.com/243098567658474" target="_blank">新一代 App</a>
+        <a href="https://stic.newgen.org.hk/聯絡我們/">聯絡我們</a>
+    </div>
+
+    <div class="container">
+        <div class="header-title">
+            <h1 id="mainTitle"></h1>
         </div>
-        <button id="btn-verify" onclick="verifyToken()">查詢證書</button>
-        <div id="verify-msg" class="alert"></div>
         
-        <div id="verify-result" class="result-box">
-            <h3 style="color: #28a745; margin-top:0;">✓ 驗證成功</h3>
-            <p><strong>學生姓名：</strong> <span id="r-name"></span></p>
-            <p><strong>學校名稱：</strong> <span id="r-school"></span></p>
-            <p><strong>大賽名稱：</strong> <span id="r-comp"></span></p>
-            <p><strong>簽發日期：</strong> <span id="r-date"></span></p>
-            <p><strong>證書編號：</strong> <span id="r-id"></span></p>
-            <a id="r-link" href="#" target="_blank" class="download-btn">查閱證書 PDF</a>
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('verify')">驗證證書真偽</div>
+            <div class="tab" onclick="switchTab('resend')">申請重發證書</div>
+        </div>
+
+        <div id="verify-section" class="tab-content active">
+            <div class="notice-box">
+                請輸入印於證書左下角的 12 位驗證碼，系統將核對該證書是否由本會正式簽發。
+            </div>
+            <div class="form-group">
+                <label for="token">證書驗證碼 (Token)</label>
+                <input type="text" id="token" placeholder="請輸入 12 位英數驗證碼" maxlength="12" oninput="this.value=this.value.replace(/[^A-Za-z0-9]/g,'');">
+            </div>
+            <button id="btn-verify" class="btn-primary" onclick="verifyToken()">查詢證書</button>
+            <div id="verify-msg" class="alert"></div>
+            
+            <div id="verify-result" class="result-box">
+                <h3 style="color: #046c4e; margin-top:0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">驗證成功</h3>
+                <p><strong>學生姓名</strong> <span id="r-name"></span></p>
+                <p><strong>學校名稱</strong> <span id="r-school"></span></p>
+                <p><strong>大賽名稱</strong> <span id="r-comp"></span></p>
+                <p><strong>簽發日期</strong> <span id="r-date"></span></p>
+                <p><strong>證書編號</strong> <span id="r-id"></span></p>
+                <a id="r-link" href="#" target="_blank" class="download-btn">查閱證書 PDF</a>
+            </div>
+        </div>
+
+        <div id="resend-section" class="tab-content">
+            <div class="notice-box">
+                系統將核對您的參賽紀錄，若資料相符，將重新發送附有驗證碼的電子證書至您的信箱。
+            </div>
+            <div class="form-group">
+                <label for="req-email">報名電郵地址</label>
+                <input type="email" id="req-email" placeholder="需與報名表一致">
+            </div>
+            <div class="form-group">
+                <label for="req-student">參賽者姓名</label>
+                <input type="text" id="req-student" placeholder="需與報名表一致">
+            </div>
+            <div class="form-group">
+                <label>大賽名稱</label>
+                <div class="composite-input-group">
+                    <span>第</span>
+                    <input type="number" id="req-edition" placeholder="例: 27" min="1" max="99" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
+                    <span>屆</span>
+                    <select id="req-comp-base" class="form-select">
+                        <option value="香港青少年科技創新大賽">香港青少年科技創新大賽</option>
+                        <option value="全國青少年科技創新大賽">全國青少年科技創新大賽</option>
+                        <option value="宋慶齡少年兒童發明獎">宋慶齡少年兒童發明獎</option>
+                        <option value="全國青年科普創新實驗暨作品大賽">全國青年科普創新實驗暨作品大賽</option>
+                        <option value="「明天小小科學家」獎勵活動">「明天小小科學家」獎勵活動</option>
+                    </select>
+                </div>
+            </div>
+            <button id="btn-resend" class="btn-primary" onclick="requestResend()">送出重發申請</button>
+            <div id="resend-msg" class="alert"></div>
         </div>
     </div>
 
-    <div id="resend-section" class="tab-content">
-        <p style="font-size:0.9em; color:#666;">系統將核對您的報名資料，若相符將重新發送證書至您的信箱。</p>
-        <div class="form-group">
-            <label for="r-email">報名電郵地址</label>
-            <input type="email" id="req-email" placeholder="example@school.edu.hk">
-        </div>
-        <div class="form-group">
-            <label for="r-student">參賽者姓名</label>
-            <input type="text" id="req-student" placeholder="需與報名表一致">
-        </div>
-        <div class="form-group">
-            <label for="r-competition">大賽名稱</label>
-            <input type="text" id="req-competition" value="香港青少年科技創新大賽">
-        </div>
-        <button id="btn-resend" onclick="requestResend()">重發證書電郵</button>
-        <div id="resend-msg" class="alert"></div>
-    </div>
-</div>
-
-<script>
-    // 您的 Google Apps Script Web App URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
-
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        if (tabId === 'verify') {
-            document.querySelectorAll('.tab')[0].classList.add('active');
-            document.getElementById('verify-section').classList.add('active');
-        } else {
-            document.querySelectorAll('.tab')[1].classList.add('active');
-            document.getElementById('resend-section').classList.add('active');
+    <script>
+        // 初始化頁面文字
+        function initPageText() {
+            document.getElementById('navTitle').textContent = SITE_CONFIG.title;
+            document.getElementById('mainTitle').textContent = SITE_CONFIG.subTitle;
         }
-        clearMessages();
-    }
+        initPageText();
 
-    function clearMessages() {
-        document.getElementById('verify-msg').className = 'alert';
-        document.getElementById('resend-msg').className = 'alert';
-        document.getElementById('verify-result').style.display = 'none';
-    }
+        // 側邊選單控制
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
 
-    function showMessage(elementId, isSuccess, text) {
-        const el = document.getElementById(elementId);
-        el.className = isSuccess ? 'alert success' : 'alert error';
-        el.innerText = text;
-    }
+        // 您的 Google Apps Script Web App URL
+        const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
 
-    async function verifyToken() {
-        const token = document.getElementById('token').value.trim();
-        if (!token) return showMessage('verify-msg', false, '請輸入驗證碼。');
-        
-        const btn = document.getElementById('btn-verify');
-        btn.disabled = true;
-        btn.innerText = '系統連線中...';
-        clearMessages();
-
-        try {
-            const response = await fetch(`${API_URL}?action=verify&token=${encodeURIComponent(token)}`);
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
-            // [升級] 先將回傳值讀取為純文字，避免 JSON 解析直接崩潰
-            const rawText = await response.text();
+            if (tabId === 'verify') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('verify-section').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('resend-section').classList.add('active');
+            }
+            clearMessages();
+        }
+
+        function clearMessages() {
+            document.getElementById('verify-msg').className = 'alert';
+            document.getElementById('resend-msg').className = 'alert';
+            document.getElementById('verify-result').style.display = 'none';
+        }
+
+        function showMessage(elementId, isSuccess, text) {
+            const el = document.getElementById(elementId);
+            el.className = isSuccess ? 'alert success' : 'alert error';
+            el.innerText = text;
+        }
+
+        async function verifyToken() {
+            const token = document.getElementById('token').value.trim();
             
+            // 嚴格攔截長度不符的輸入
+            if (!token || token.length !== 12) {
+                return showMessage('verify-msg', false, '請輸入完整的 12 位證書驗證碼。');
+            }
+            
+            const btn = document.getElementById('btn-verify');
+            btn.disabled = true;
+            btn.innerText = '系統連線與核對中...';
+            clearMessages();
+
             try {
-                // 嘗試將純文字解析為 JSON
-                const result = JSON.parse(rawText);
+                const response = await fetch(`${API_URL}?action=verify&token=${encodeURIComponent(token)}`);
+                const rawText = await response.text();
                 
-                if (result.success) {
-                    document.getElementById('verify-result').style.display = 'block';
-                    document.getElementById('r-name').innerText = result.data.name;
-                    document.getElementById('r-school').innerText = result.data.school;
-                    document.getElementById('r-comp').innerText = result.data.competition;
-                    document.getElementById('r-date').innerText = result.data.signDate;
-                    document.getElementById('r-id').innerText = result.data.certId;
-                    document.getElementById('r-link').href = result.data.certLink;
-                } else {
-                    showMessage('verify-msg', false, result.message);
+                try {
+                    const result = JSON.parse(rawText);
+                    
+                    if (result.success) {
+                        document.getElementById('verify-result').style.display = 'block';
+                        document.getElementById('r-name').innerText = result.data.name;
+                        document.getElementById('r-school').innerText = result.data.school;
+                        document.getElementById('r-comp').innerText = result.data.competition;
+                        document.getElementById('r-date').innerText = result.data.signDate;
+                        document.getElementById('r-id').innerText = result.data.certId;
+                        document.getElementById('r-link').href = result.data.certLink;
+                    } else {
+                        showMessage('verify-msg', false, result.message);
+                    }
+                } catch (jsonError) {
+                    console.error("[系統診斷] 後端回傳非預期格式:", rawText);
+                    showMessage('verify-msg', false, '後端資料解析失敗，請聯繫管理員。');
                 }
-            } catch (jsonError) {
-                // 若解析失敗，代表後端回傳了 HTML (如錯誤頁面或登入畫面)
-                console.error("[系統診斷] 後端回傳非預期格式:", rawText);
-                showMessage('verify-msg', false, '後端資料解析失敗，請按 F12 開啟 Console 檢視詳細錯誤報告。');
+
+            } catch (networkError) {
+                console.error("[系統診斷] 網路連線或跨域請求遭阻擋:", networkError);
+                showMessage('verify-msg', false, '網路連線異常，請確認伺服器狀態。');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '查詢證書';
+            }
+        }
+
+        async function requestResend() {
+            const email = document.getElementById('req-email').value.trim();
+            const name = document.getElementById('req-student').value.trim();
+            const edition = document.getElementById('req-edition').value.trim();
+            const baseName = document.getElementById('req-comp-base').value.trim();
+            
+            if (!email || !name) {
+                return showMessage('resend-msg', false, '請填寫報名電郵與參賽者姓名。');
+            }
+            
+            if (!edition) {
+                return showMessage('resend-msg', false, '請輸入正確的大賽屆數（數字）。');
             }
 
-        } catch (networkError) {
-            // 捕捉跨域阻擋 (CORS) 或網路斷線
-            console.error("[系統診斷] 網路連線或跨域請求遭阻擋:", networkError);
-            showMessage('verify-msg', false, '跨域連線遭阻擋 (CORS)，請確認 API 部署權限設定。');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = '查詢證書';
-        }
-    }
+            // 動態拼接完整大賽名稱送往後端
+            const fullCompetitionName = `第${edition}屆${baseName}`;
 
-    async function requestResend() {
-        const email = document.getElementById('req-email').value.trim();
-        const name = document.getElementById('req-student').value.trim();
-        const comp = document.getElementById('req-competition').value.trim();
-        
-        if (!email || !name || !comp) return showMessage('resend-msg', false, '請完整填寫所有欄位。');
+            const btn = document.getElementById('btn-resend');
+            btn.disabled = true;
+            btn.innerText = '系統核對與發送中...';
+            clearMessages();
 
-        const btn = document.getElementById('btn-resend');
-        btn.disabled = true;
-        btn.innerText = '系統核對與發送中...';
-        clearMessages();
-
-        try {
-            const response = await fetch(`${API_URL}?action=resend&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&competition=${encodeURIComponent(comp)}`);
-            const rawText = await response.text();
-            
             try {
-                const result = JSON.parse(rawText);
-                showMessage('resend-msg', result.success, result.message);
-                if(result.success) {
-                    document.getElementById('req-email').value = '';
-                    document.getElementById('req-student').value = '';
+                const response = await fetch(`${API_URL}?action=resend&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}&competition=${encodeURIComponent(fullCompetitionName)}`);
+                const rawText = await response.text();
+                
+                try {
+                    const result = JSON.parse(rawText);
+                    showMessage('resend-msg', result.success, result.message);
+                    if(result.success) {
+                        // 成功後僅清空電郵與姓名，保留賽事選擇方便操作
+                        document.getElementById('req-email').value = '';
+                        document.getElementById('req-student').value = '';
+                    }
+                } catch (jsonError) {
+                    console.error("[系統診斷] 後端回傳非預期格式:", rawText);
+                    showMessage('resend-msg', false, '後端資料解析失敗，請聯繫管理員。');
                 }
-            } catch (jsonError) {
-                console.error("[系統診斷] 後端回傳非預期格式:", rawText);
-                showMessage('resend-msg', false, '後端資料解析失敗，請按 F12 開啟 Console 檢視詳細錯誤報告。');
+                
+            } catch (networkError) {
+                console.error("[系統診斷] 網路連線或跨域請求遭阻擋:", networkError);
+                showMessage('resend-msg', false, '網路連線異常，請確認伺服器狀態。');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '送出重發申請';
             }
-            
-        } catch (networkError) {
-            console.error("[系統診斷] 網路連線或跨域請求遭阻擋:", networkError);
-            showMessage('resend-msg', false, '跨域連線遭阻擋 (CORS)，請確認 API 部署權限設定。');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = '重發證書電郵';
         }
-    }
 
-    window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tokenFromUrl = urlParams.get('token');
-        if (tokenFromUrl) {
-            document.getElementById('token').value = tokenFromUrl;
-            verifyToken();
-        }
-    };
-</script>
-
+        window.onload = function() {
+            // 處理帶有 token 參數的網址直接訪問
+            const urlParams = new URLSearchParams(window.location.search);
+            const tokenFromUrl = urlParams.get('token');
+            if (tokenFromUrl) {
+                // 進行基本過濾後再放入 input
+                const cleanToken = tokenFromUrl.replace(/[^A-Za-z0-9]/g, '').substring(0, 12);
+                document.getElementById('token').value = cleanToken;
+                if(cleanToken.length === 12) {
+                    verifyToken();
+                }
+            }
+        };
+    </script>
 </body>
 </html>
