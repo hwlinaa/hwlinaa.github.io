@@ -422,8 +422,8 @@
         </div>
 
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('verify')">驗證憑證真偽</div>
-            <div class="tab" onclick="switchTab('resend')">申請重發憑證</div>
+            <div class="tab active" onclick="switchTab('verify')">驗證證書真偽</div>
+            <div class="tab" onclick="switchTab('resend')">申請重發證書</div>
         </div>
 
         <div id="verify-section" class="tab-content active">
@@ -432,11 +432,11 @@
                 支援 2026 年 3 月 1 日起簽發的證書。
             </div>
             <div class="form-group">
-                <label for="token">憑證防偽驗證碼 (Token)</label>
+                <label for="token">證書防偽驗證碼 (Token)</label>
                 <input type="text" id="token" placeholder="請輸入 12 位證書驗證碼" maxlength="12"
                     oninput="this.value=this.value.replace(/[^A-Za-z0-9\-_]/g,'');">
             </div>
-            <button id="btn-verify" class="btn-primary" onclick="verifyToken()">查詢憑證</button>
+            <button id="btn-verify" class="btn-primary" onclick="verifyToken()">查詢證書</button>
             <div id="verify-msg" class="alert"></div>
 
             <div id="verify-result" class="result-box">
@@ -447,14 +447,14 @@
                 <p><strong>身分角色</strong> <span id="r-role"></span></p>
                 <p><strong>活動名稱</strong> <span id="r-comp"></span></p>
                 <p><strong>簽發日期</strong> <span id="r-date"></span></p>
-                <p><strong>憑證編號</strong> <span id="r-id"></span></p>
-                <a id="r-link" href="#" target="_blank" class="download-btn">查閱電子憑證 PDF</a>
+                <p><strong>證書編號</strong> <span id="r-id"></span></p>
+                <a id="r-link" href="#" target="_blank" class="download-btn">查閱電子證書 PDF</a>
             </div>
         </div>
 
         <div id="resend-section" class="tab-content">
             <div class="notice-box">
-                系統將核對您的登記紀錄，若資料相符，將重新發送附有驗證碼的電子憑證至您的信箱。
+                系統將核對您的登記紀錄，若資料相符，將重新發送附有驗證碼的電子證書至您的信箱。
             </div>
             <div class="form-group">
                 <label for="req-email">登記電郵地址</label>
@@ -526,12 +526,11 @@
             el.innerText = text;
         }
 
-        // [修復：完整的 JS 語法結構與邏輯修正]
         async function verifyToken() {
             const token = document.getElementById('token').value.trim();
 
             if (!token || token.length !== 12) {
-                return showMessage('verify-msg', false, '請輸入完整的 12 位憑證防偽驗證碼。');
+                return showMessage('verify-msg', false, '請輸入完整的 12 位證書防偽驗證碼。');
             }
 
             const btn = document.getElementById('btn-verify');
@@ -568,7 +567,7 @@
                 showMessage('verify-msg', false, '網路連線異常，請確認伺服器狀態。');
             } finally {
                 btn.disabled = false;
-                btn.innerText = '查詢憑證';
+                btn.innerText = '查詢證書';
             }
         }
 
