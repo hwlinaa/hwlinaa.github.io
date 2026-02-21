@@ -37,7 +37,6 @@
         .main-container { max-width: 1140px; margin: 30px auto; padding: 0 15px; min-height: 70vh; }
         .page-title { font-size: 20px; color: var(--ng-green); font-weight: bold; letter-spacing: 1px; margin-bottom: 20px; border-left: 5px solid var(--ng-green); padding-left: 12px; }
         
-        /* 橫向滑動 Tabs (防 4 個按鈕在小手機擠壓) */
         .tab-nav { display: flex; background-color: var(--bg-gray); border: 1px solid var(--border-color); border-bottom: none; border-radius: 8px 8px 0 0; overflow-x: auto; flex-wrap: nowrap; }
         .tab-nav::-webkit-scrollbar { display: none; }
         .tab-btn { flex: 1 1 auto; text-align: center; padding: 14px 10px; font-size: 15px; font-weight: bold; color: var(--text-muted); background: transparent; border: none; border-right: 1px solid var(--border-color); cursor: pointer; white-space: nowrap; transition: 0.2s; }
@@ -83,20 +82,17 @@
         .btn-outline-orange:hover { background-color: var(--ng-orange); color: #ffffff; }
 
         /* =========================================
-           區塊 3: 社交媒體 (輕量化組織網格)
+           區塊 3: 社交媒體 (總部/附屬中心)
            ========================================= */
         .social-org-section { margin-bottom: 35px; }
         .org-header { display: flex; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
         .org-title { font-size: 16px; color: var(--text-main); font-weight: bold; border-left: 4px solid var(--ng-green); padding-left: 10px; }
         
         .social-clean-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        
         .clean-btn { display: flex; align-items: center; background-color: #ffffff; border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; font-size: 13px; font-weight: bold; color: var(--text-main); transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
         .clean-btn:hover { border-color: var(--ng-green); box-shadow: 0 4px 8px rgba(0,0,0,0.05); transform: translateY(-1px); }
         
         .brand-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: bold; margin-right: 10px; flex-shrink: 0; }
-        
-        /* 平台專屬色 */
         .icon-fb { background-color: #1877F2; }
         .icon-ig { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
         .icon-wechat { background-color: #07C160; }
@@ -104,6 +100,22 @@
         .icon-xhs { background-color: #ff2442; }
         .icon-yt { background-color: #FF0000; }
         .icon-wa { background-color: #25D366; }
+
+        /* =========================================
+           🌟 全新：屬會簡介卡片 (Club Grid)
+           ========================================= */
+        .club-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .club-card { display: flex; align-items: flex-start; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; transition: 0.3s; }
+        .club-card:hover { border-color: var(--ng-green); box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .club-logo { width: 65px; height: 65px; object-fit: contain; margin-right: 15px; flex-shrink: 0; border-radius: 6px; background-color: #ffffff; }
+        .club-info { flex: 1; }
+        .club-name { font-size: 15px; font-weight: bold; color: var(--ng-green); margin-bottom: 6px; }
+        .club-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .club-actions { display: flex; align-items: center; gap: 10px; }
+        .club-link-btn { display: inline-block; padding: 4px 14px; font-size: 12px; font-weight: bold; color: var(--ng-orange); border: 1px solid var(--ng-orange); border-radius: 50px; transition: 0.2s; }
+        .club-link-btn:hover { background: var(--ng-orange); color: #ffffff; }
+        .club-ig-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: #ffffff; border-radius: 50%; font-size: 11px; font-weight: bold; }
 
         /* =========================================
            區塊 4: 活動相簿
@@ -128,20 +140,19 @@
             .tab-btn { font-size: 16px; padding: 16px 20px; flex: 1; }
             .tab-content-area { padding: 40px; }
             
-            /* 新聞列表 */
             .news-item { flex-direction: row; align-items: center; gap: 20px; padding: 20px 0; }
             .news-meta { width: 180px; flex-shrink: 0; }
             .news-title { font-size: 16px; }
             
-            /* 出版刊物 */
             .doc-item { flex-direction: row; align-items: flex-start; justify-content: space-between; padding: 25px; }
             .doc-content { flex: 1; padding-right: 40px; }
             .doc-action { width: 120px; flex-shrink: 0; text-align: right; margin-top: 25px; }
-            .doc-summary { margin-bottom: 0; }
             
-            /* 社交媒體與相簿 */
             .social-clean-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; }
             .clean-btn { font-size: 14px; padding: 15px; }
+            
+            /* 電腦端屬會卡片為左右兩排 */
+            .club-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
             
             .album-item { padding: 20px; }
             .album-date { width: 120px; font-size: 14px; }
@@ -203,32 +214,18 @@
                 <div class="doc-list">
                     <div class="doc-item">
                         <div class="doc-content">
-                            <div class="doc-header">
-                                <div class="doc-category">年報</div>
-                                <div class="doc-title">2025 年報</div>
-                            </div>
-                            <div class="doc-summary">
-                                2025年是香港新一代文化協會豐收的一年。本年報詳盡紀錄了協會在推動 STEM 教育、國情教育及領袖培訓等核心領域的重大進展。今年我們成功舉辦了超過 50 場大型學生活動，並協助多支香港代表隊在全國及國際創科賽事中屢獲殊榮。報告內亦包含本會經審計之財務狀況及未來發展展望。
-                            </div>
+                            <div class="doc-header"><div class="doc-category">年報</div><div class="doc-title">2025 年報</div></div>
+                            <div class="doc-summary">2025年是香港新一代文化協會豐收的一年。本年報詳盡紀錄了協會在推動 STEM 教育、國情教育及領袖培訓等核心領域的重大進展。今年我們成功舉辦了超過 50 場大型學生活動，並協助多支香港代表隊在全國及國際創科賽事中屢獲殊榮。報告內亦包含本會經審計之財務狀況及未來發展展望。</div>
                         </div>
-                        <div class="doc-action">
-                            <a href="#" class="btn-outline-orange">線上閱覽</a>
-                        </div>
+                        <div class="doc-action"><a href="#" class="btn-outline-orange">線上閱覽</a></div>
                     </div>
 
                     <div class="doc-item">
                         <div class="doc-content">
-                            <div class="doc-header">
-                                <div class="doc-category">特刊</div>
-                                <div class="doc-title">50 周年紀念特刊</div>
-                            </div>
-                            <div class="doc-summary">
-                                走過半世紀，初心不變。本特刊回顧了協會自 1974 年成立以來的發展歷程，收錄了歷屆主席、校友及合作夥伴的珍貴訪談與老照片，見證幾代香港青年人的成長軌跡與奮鬥故事。
-                            </div>
+                            <div class="doc-header"><div class="doc-category">特刊</div><div class="doc-title">50 周年紀念特刊</div></div>
+                            <div class="doc-summary">走過半世紀，初心不變。本特刊回顧了協會自 1974 年成立以來的發展歷程，收錄了歷屆主席、校友及合作夥伴的珍貴訪談與老照片，見證幾代香港青年人的成長軌跡與奮鬥故事。</div>
                         </div>
-                        <div class="doc-action">
-                            <a href="#" class="btn-outline-orange">線上閱覽</a>
-                        </div>
+                        <div class="doc-action"><a href="#" class="btn-outline-orange">線上閱覽</a></div>
                     </div>
                 </div>
             </div>
@@ -270,16 +267,105 @@
                 </div>
 
                 <div class="social-org-section">
-                    <div class="org-header"><div class="org-title">屬會 (Instagram 帳戶)</div></div>
-                    <div class="social-clean-grid">
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 清華課程校友會</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 科學英才會</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 大專學壇</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 新動力</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 新一代之友</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 教育專業發展促進會</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> 準教師協會</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-ig">IG</div> STEAM教育學會</a>
+                    <div class="org-header"><div class="org-title">轄下屬會介紹</div></div>
+                    <div class="club-grid">
+                        
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/logojpg-1.jpg" alt="清華課程校友會" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港新一代清華課程校友會</div>
+                                <div class="club-desc">由曾參與清華大學國情培訓課程的校友組成，致力推動香港青年認識祖國發展，促進京港兩地文化交流。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/%E9%A6%99%E6%B8%AF%E6%96%B0%E4%B8%80%E4%BB%A3%E6%B8%85%E8%8F%AF%E8%AA%B2%E7%A8%8B%E6%A0%A1%E5%8F%8B%E6%9C%83/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/logo.jpg" alt="科學英才會" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港科學英才會</div>
+                                <div class="club-desc">凝聚對科學有興趣的優秀同學，普及科學知識，推廣科學創意教育；為香港培育新一代科技創新人才。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/5460-2/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/logojpg-3.jpg" alt="大專學壇" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港大專學壇</div>
+                                <div class="club-desc">匯聚全港各大專院校的精英學生，提供學術交流、領袖培訓與社會實踐的平台，鼓勵關心社會事務。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/%E9%A6%99%E6%B8%AF%E5%A4%A7%E5%B0%88%E5%AD%B8%E5%A3%87/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/logojpg-2.jpg" alt="新動力" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港新動力</div>
+                                <div class="club-desc">致力凝聚歷屆傑出學生及青年領袖，舉辦各類社會服務與交流活動，培養青年的社會承擔感。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/%E9%A6%99%E6%B8%AF%E6%96%B0%E5%8B%95%E5%8A%9B/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/logojpg.jpg" alt="新一代之友" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港新一代之友</div>
+                                <div class="club-desc">結集曾參與本會活動的熱心舊生及義工，傳承「視野、創新、博識、承擔」的宗旨，支援各項青年活動。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/ngfd/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/hkepda-logo-without-name.jpeg" alt="教育專業發展促進會" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港教育專業發展促進會</div>
+                                <div class="club-desc">為香港教育工作者提供專業交流平台，舉辦教育論壇與教師培訓，推動教育創新及提升教學質素。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/%E9%A6%99%E6%B8%AF%E6%95%99%E8%82%B2%E5%B0%88%E6%A5%AD%E7%99%BC%E5%B1%95%E4%BF%83%E9%80%B2%E6%9C%83/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2022/11/logo_.jpg" alt="準教師協會" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港準教師協會</div>
+                                <div class="club-desc">專為正就讀教育文憑或教育學位的準教師而設，透過實習交流與師友計劃，為投身教育界作好準備。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/%E9%A6%99%E6%B8%AF%E6%BA%96%E6%95%99%E5%B8%AB%E5%8D%94%E6%9C%83/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="club-card">
+                            <img src="https://www.newgen.org.hk/wp-content/uploads/2023/02/whatsapp-image-2023-02-06-at-14.53.25v.2.jpeg" alt="STEAM教育學會" class="club-logo">
+                            <div class="club-info">
+                                <div class="club-name">香港 STEAM 教育學會</div>
+                                <div class="club-desc">致力在全港中小學推廣 STEAM 教育，結合科學、工程與藝術，培養學生的跨學科解難能力及創新思維。</div>
+                                <div class="club-actions">
+                                    <a href="https://www.newgen.org.hk/%E9%A6%99%E6%B8%AFsteam%E6%95%99%E8%82%B2%E5%AD%B8%E6%9C%83/" class="club-link-btn">了解更多</a>
+                                    <a href="#" class="club-ig-btn" title="Instagram">IG</a>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
