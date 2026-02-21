@@ -1,258 +1,369 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>媒體中心 - 香港新一代文化協會</title>
+    <title>香港新一代文化協會 - 媒體中心</title>
     <style>
-        /* --- 模仿 HKNGCA 的主題色變數 --- */
         :root {
-            --hkngca-blue: #003A79;    /* 深邃的機構藍 */
-            --hkngca-red: #C41230;     /* 點綴用的活力紅 */
-            --bg-light: #F7F9FA;       /* 淺灰背景，降低視覺疲勞 */
-            --text-dark: #222222;
-            --text-gray: #666666;
-            --border-line: #DDDDDD;
+            --primary-color: #004a99;
+            --hover-color: #003366;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
         }
 
         body {
-            font-family: 'PingFang HK', 'Microsoft JhengHei', 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            padding: 40px 20px;
         }
 
-        /* --- 頂部模擬導航列 --- */
-        .top-navbar {
-            background-color: #ffffff;
-            border-top: 5px solid var(--hkngca-red);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-container {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .header-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- Tabs 導航設計 --- */
+        .tabs {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-area {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--hkngca-blue);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            background-color: var(--hkngca-blue);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 1.2rem;
-        }
-
-        /* --- 頁面主要容器 --- */
-        .main-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-            min-height: 80vh;
-        }
-
-        .page-title {
-            font-size: 2.2rem;
-            color: var(--hkngca-blue);
-            border-left: 6px solid var(--hkngca-red);
-            padding-left: 15px;
+            justify-content: center;
+            gap: 15px;
             margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        /* --- Tabs 導航設計 (更端莊的風格) --- */
-        .tabs-container {
-            background: #ffffff;
-            border: 1px solid var(--border-line);
-            border-bottom: none;
-            display: flex;
-            flex-wrap: wrap;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
         }
 
         .tab-btn {
-            background: #f8f8f8;
+            background: none;
             border: none;
-            border-bottom: 1px solid var(--border-line);
-            border-right: 1px solid var(--border-line);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: var(--text-gray);
-            padding: 15px 25px;
+            color: var(--text-muted);
+            padding: 10px 25px;
             cursor: pointer;
-            flex-grow: 1;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .tab-btn:hover {
-            background: #ffffff;
-            color: var(--hkngca-blue);
+            color: var(--primary-color);
         }
 
         .tab-btn.active {
-            background: #ffffff;
-            color: var(--hkngca-blue);
-            border-bottom: 3px solid var(--hkngca-red);
+            color: var(--primary-color);
         }
 
-        /* --- 內容區域 --- */
-        .content-area {
-            background: #ffffff;
-            border: 1px solid var(--border-line);
-            border-top: none;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 4px 4px 0 0;
         }
 
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- 內容區域切換 --- */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
 
-        /* --- 次級篩選標籤 --- */
-        .sub-filters { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-line); }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- 模組 1: 出版刊物網格 (沿用之前的設計) --- */
+        .sub-filters {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
         .sub-filters button {
-            padding: 5px 15px; margin-right: 10px; border-radius: 3px;
-            border: 1px solid var(--hkngca-blue); background: #fff; color: var(--hkngca-blue); cursor: pointer;
-            transition: 0.2s;
+            padding: 6px 15px;
+            margin: 0 5px;
+            border-radius: 20px;
+            border: 1px solid var(--primary-color);
+            background: #fff;
+            color: var(--primary-color);
+            cursor: pointer;
         }
-        .sub-filters button.active, .sub-filters button:hover { background: var(--hkngca-blue); color: #fff; }
 
-        /* --- 卡片設計 (更具機構感，減少過度圓角) --- */
-        .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .report-card { border: 1px solid var(--border-line); padding: 20px; text-align: center; transition: box-shadow 0.2s; background: #fafafa; }
-        .report-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #ffffff; border-color: var(--hkngca-blue); }
-        .pdf-icon { font-size: 40px; margin-bottom: 15px; color: #d32f2f; }
-        .report-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 20px; color: var(--text-dark); }
-        .read-btn { display: inline-block; padding: 8px 20px; background: var(--hkngca-blue); color: #fff; text-decoration: none; font-size: 0.95rem; transition: 0.2s; border-radius: 2px; }
-        .read-btn:hover { background: var(--hkngca-red); }
+        .sub-filters button.active,
+        .sub-filters button:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
 
-        /* --- 新聞列表 (更正式的排版) --- */
-        .news-item { display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid var(--border-line); }
-        .news-item:last-child { border-bottom: none; }
-        .news-date { width: 110px; color: var(--hkngca-red); font-weight: bold; font-family: Arial, sans-serif; }
-        .news-tag { background: var(--hkngca-blue); color: white; padding: 2px 6px; font-size: 0.8rem; margin-right: 15px; border-radius: 2px; }
-        .news-title { flex-grow: 1; font-size: 1.1rem; color: var(--text-dark); text-decoration: none; }
-        .news-title:hover { color: var(--hkngca-red); text-decoration: underline; }
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
 
-        /* --- 頁腳 --- */
-        .footer { background: var(--hkngca-blue); color: white; text-align: center; padding: 20px 0; margin-top: 50px; font-size: 0.9rem; }
+        .report-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .pdf-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .report-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .read-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        /* --- 模組 2: 新聞列表設計 --- */
+        .news-list {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .news-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-date {
+            width: 120px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .news-tag {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-right: 15px;
+            color: #555;
+        }
+
+        .news-title {
+            flex-grow: 1;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .news-title:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* --- 模組 3: YouTube 影音網格 --- */
+        .channel-section {
+            margin-bottom: 40px;
+        }
+
+        .channel-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-left: 5px solid red;
+            padding-left: 10px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 180px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 3rem;
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-title {
+            font-size: 1rem;
+            font-weight: bold;
+            line-height: 1.4;
+        }
     </style>
 </head>
+
 <body>
 
-    <header class="top-navbar">
-        <div class="nav-container">
-            <div class="logo-area">
-                <div class="logo-icon">HKNGCA</div>
-                <span>香港新一代文化協會</span>
-            </div>
-            <div style="color: var(--hkngca-blue); font-weight: bold; cursor: pointer;">
-                返回主頁 🏠
-            </div>
+    <div class="container">
+        <div class="header-section">
+            <h2>媒體中心 Media Center</h2>
+            <p>掌握香港新一代文化協會的最新動態、出版刊物及精彩影音</p>
         </div>
-    </header>
 
-    <div class="main-container">
-        <h1 class="page-title">媒體中心 Media Center</h1>
-
-        <div class="tabs-container">
+        <div class="tabs">
             <button class="tab-btn active" onclick="openTab('tab-publications')">📚 出版刊物</button>
             <button class="tab-btn" onclick="openTab('tab-news')">📰 新聞與動態</button>
-            <button class="tab-btn" onclick="openTab('tab-social')">📱 社交媒體及影音</button>
+            <button class="tab-btn" onclick="openTab('tab-videos')">🎥 影音專區</button>
         </div>
 
-        <div class="content-area">
-            
-            <div id="tab-publications" class="tab-content active">
-                <div class="sub-filters">
-                    <button class="active">全部</button>
-                    <button>年度報告</button>
-                    <button>特刊</button>
-                    <button>會訊</button>
+        <div id="tab-publications" class="tab-content active">
+            <div class="sub-filters">
+                <button class="active">全部</button>
+                <button>年報</button>
+                <button>特刊</button>
+                <button>會訊</button>
+            </div>
+            <div class="report-grid">
+                <div class="report-card">
+                    <div class="pdf-icon">📄</div>
+                    <div class="report-title">2025年報</div>
+                    <a href="#" class="read-btn">線上閱覽</a>
                 </div>
-                <div class="report-grid">
-                    <div class="report-card">
-                        <div class="pdf-icon">📄</div>
-                        <div class="report-title">2025年報</div>
-                        <a href="#" class="read-btn">線上閱覽</a>
-                    </div>
-                    <div class="report-card">
-                        <div class="pdf-icon">📘</div>
-                        <div class="report-title">50周年紀念特刊</div>
-                        <a href="#" class="read-btn">線上閱覽</a>
-                    </div>
-                    <div class="report-card">
-                        <div class="pdf-icon">📰</div>
-                        <div class="report-title">2024 秋季會訊</div>
-                        <a href="#" class="read-btn">線上閱覽</a>
-                    </div>
+                <div class="report-card">
+                    <div class="pdf-icon">📘</div>
+                    <div class="report-title">50周年紀念特刊</div>
+                    <a href="#" class="read-btn">線上閱覽</a>
+                </div>
+                <div class="report-card">
+                    <div class="pdf-icon">📰</div>
+                    <div class="report-title">2024 秋季會訊</div>
+                    <a href="#" class="read-btn">線上閱覽</a>
                 </div>
             </div>
-
-            <div id="tab-news" class="tab-content">
-                <div class="sub-filters">
-                    <button class="active">最新消息</button>
-                    <button>官方新聞稿</button>
-                    <button>傳媒報道</button>
-                </div>
-                <div>
-                    <div class="news-item">
-                        <div class="news-date">2026-02-15</div>
-                        <div class="news-tag">新聞稿</div>
-                        <a href="#" class="news-title">香港青少年科技創新大賽開始接受報名</a>
-                    </div>
-                    <div class="news-item">
-                        <div class="news-date">2026-01-20</div>
-                        <div class="news-tag">傳媒報道</div>
-                        <a href="#" class="news-title">【星島日報】專訪新一代文化協會：培育未來創科人才</a>
-                    </div>
-                    <div class="news-item">
-                        <div class="news-date">2025-12-10</div>
-                        <div class="news-tag">新聞稿</div>
-                        <a href="#" class="news-title">大專生創新創業比賽頒獎典禮圓滿落幕</a>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-social" class="tab-content">
-                <h3 style="color: var(--hkngca-blue); border-bottom: 2px solid var(--border-line); padding-bottom: 10px;">官方 Instagram 動態</h3>
-                <p style="color: var(--text-gray); margin-bottom: 30px;">(這裡將會嵌入 Elfsight 或 Curator.io 的 Instagram 網格外掛代碼)</p>
-                
-                <h3 style="color: var(--hkngca-blue); border-bottom: 2px solid var(--border-line); padding-bottom: 10px;">官方 YouTube 頻道</h3>
-                <p style="color: var(--text-gray);">(這裡將會嵌入協會的三個 YouTube 頻道精華影片)</p>
-            </div>
-
         </div>
+
+        <div id="tab-news" class="tab-content">
+            <div class="sub-filters">
+                <button class="active">全部</button>
+                <button>官方新聞稿</button>
+                <button>傳媒報道</button>
+            </div>
+            <div class="news-list">
+                <div class="news-item">
+                    <div class="news-date">2025-10-15</div>
+                    <div class="news-tag">新聞稿</div>
+                    <a href="#" class="news-title">香港青少年科技創新大賽 2025 圓滿落幕</a>
+                </div>
+                <div class="news-item">
+                    <div class="news-date">2025-09-02</div>
+                    <div class="news-tag">傳媒報道</div>
+                    <a href="#" class="news-title">【星島日報】專訪新一代文化協會：培育未來創科人才</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-videos" class="tab-content">
+            <div class="channel-section">
+                <h3 class="channel-title">官方主頻道 (活動精華)</h3>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶</div>
+                        <div class="video-info">
+                            <div class="video-title">50周年會慶晚宴精華片段</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="channel-section">
+                <h3 class="channel-title">STEM 教育頻道</h3>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <div class="video-thumbnail">▶</div>
+                        <div class="video-info">
+                            <div class="video-title">科學創新工作坊：AI 機器人製作</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <footer class="footer">
-        © 2026 香港新一代文化協會 Hong Kong New Generation Cultural Association. All Rights Reserved.
-    </footer>
-
     <script>
+        // 控制 Tab 切換的簡單邏輯
         function openTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            // 隱藏所有內容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            // 移除所有按鈕的 active 狀態
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // 顯示被點擊的內容
             document.getElementById(tabId).classList.add('active');
+            // 將點擊的按鈕設為 active
             event.currentTarget.classList.add('active');
         }
     </script>
 </body>
+
 </html>
