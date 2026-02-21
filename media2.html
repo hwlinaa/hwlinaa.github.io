@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>媒體中心 - 香港新一代文化協會</title>
+    <style>
+        /* --- 模仿 HKNGCA 的主題色變數 --- */
+        :root {
+            --hkngca-blue: #003A79;    /* 深邃的機構藍 */
+            --hkngca-red: #C41230;     /* 點綴用的活力紅 */
+            --bg-light: #F7F9FA;       /* 淺灰背景，降低視覺疲勞 */
+            --text-dark: #222222;
+            --text-gray: #666666;
+            --border-line: #DDDDDD;
+        }
+
+        body {
+            font-family: 'PingFang HK', 'Microsoft JhengHei', 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* --- 頂部模擬導航列 --- */
+        .top-navbar {
+            background-color: #ffffff;
+            border-top: 5px solid var(--hkngca-red);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--hkngca-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            background-color: var(--hkngca-blue);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 1.2rem;
+        }
+
+        /* --- 頁面主要容器 --- */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 80vh;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            color: var(--hkngca-blue);
+            border-left: 6px solid var(--hkngca-red);
+            padding-left: 15px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* --- Tabs 導航設計 (更端莊的風格) --- */
+        .tabs-container {
+            background: #ffffff;
+            border: 1px solid var(--border-line);
+            border-bottom: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #f8f8f8;
+            border: none;
+            border-bottom: 1px solid var(--border-line);
+            border-right: 1px solid var(--border-line);
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-gray);
+            padding: 15px 25px;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: #ffffff;
+            color: var(--hkngca-blue);
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: var(--hkngca-blue);
+            border-bottom: 3px solid var(--hkngca-red);
+        }
+
+        /* --- 內容區域 --- */
+        .content-area {
+            background: #ffffff;
+            border: 1px solid var(--border-line);
+            border-top: none;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 次級篩選標籤 --- */
+        .sub-filters { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-line); }
+        .sub-filters button {
+            padding: 5px 15px; margin-right: 10px; border-radius: 3px;
+            border: 1px solid var(--hkngca-blue); background: #fff; color: var(--hkngca-blue); cursor: pointer;
+            transition: 0.2s;
+        }
+        .sub-filters button.active, .sub-filters button:hover { background: var(--hkngca-blue); color: #fff; }
+
+        /* --- 卡片設計 (更具機構感，減少過度圓角) --- */
+        .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .report-card { border: 1px solid var(--border-line); padding: 20px; text-align: center; transition: box-shadow 0.2s; background: #fafafa; }
+        .report-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #ffffff; border-color: var(--hkngca-blue); }
+        .pdf-icon { font-size: 40px; margin-bottom: 15px; color: #d32f2f; }
+        .report-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 20px; color: var(--text-dark); }
+        .read-btn { display: inline-block; padding: 8px 20px; background: var(--hkngca-blue); color: #fff; text-decoration: none; font-size: 0.95rem; transition: 0.2s; border-radius: 2px; }
+        .read-btn:hover { background: var(--hkngca-red); }
+
+        /* --- 新聞列表 (更正式的排版) --- */
+        .news-item { display: flex; align-items: flex-start; padding: 15px 0; border-bottom: 1px solid var(--border-line); }
+        .news-item:last-child { border-bottom: none; }
+        .news-date { width: 110px; color: var(--hkngca-red); font-weight: bold; font-family: Arial, sans-serif; }
+        .news-tag { background: var(--hkngca-blue); color: white; padding: 2px 6px; font-size: 0.8rem; margin-right: 15px; border-radius: 2px; }
+        .news-title { flex-grow: 1; font-size: 1.1rem; color: var(--text-dark); text-decoration: none; }
+        .news-title:hover { color: var(--hkngca-red); text-decoration: underline; }
+
+        /* --- 頁腳 --- */
+        .footer { background: var(--hkngca-blue); color: white; text-align: center; padding: 20px 0; margin-top: 50px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header class="top-navbar">
+        <div class="nav-container">
+            <div class="logo-area">
+                <div class="logo-icon">HKNGCA</div>
+                <span>香港新一代文化協會</span>
+            </div>
+            <div style="color: var(--hkngca-blue); font-weight: bold; cursor: pointer;">
+                返回主頁 🏠
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <h1 class="page-title">媒體中心 Media Center</h1>
+
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="openTab('tab-publications')">📚 出版刊物</button>
+            <button class="tab-btn" onclick="openTab('tab-news')">📰 新聞與動態</button>
+            <button class="tab-btn" onclick="openTab('tab-social')">📱 社交媒體及影音</button>
+        </div>
+
+        <div class="content-area">
+            
+            <div id="tab-publications" class="tab-content active">
+                <div class="sub-filters">
+                    <button class="active">全部</button>
+                    <button>年度報告</button>
+                    <button>特刊</button>
+                    <button>會訊</button>
+                </div>
+                <div class="report-grid">
+                    <div class="report-card">
+                        <div class="pdf-icon">📄</div>
+                        <div class="report-title">2025年報</div>
+                        <a href="#" class="read-btn">線上閱覽</a>
+                    </div>
+                    <div class="report-card">
+                        <div class="pdf-icon">📘</div>
+                        <div class="report-title">50周年紀念特刊</div>
+                        <a href="#" class="read-btn">線上閱覽</a>
+                    </div>
+                    <div class="report-card">
+                        <div class="pdf-icon">📰</div>
+                        <div class="report-title">2024 秋季會訊</div>
+                        <a href="#" class="read-btn">線上閱覽</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-news" class="tab-content">
+                <div class="sub-filters">
+                    <button class="active">最新消息</button>
+                    <button>官方新聞稿</button>
+                    <button>傳媒報道</button>
+                </div>
+                <div>
+                    <div class="news-item">
+                        <div class="news-date">2026-02-15</div>
+                        <div class="news-tag">新聞稿</div>
+                        <a href="#" class="news-title">香港青少年科技創新大賽開始接受報名</a>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2026-01-20</div>
+                        <div class="news-tag">傳媒報道</div>
+                        <a href="#" class="news-title">【星島日報】專訪新一代文化協會：培育未來創科人才</a>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-date">2025-12-10</div>
+                        <div class="news-tag">新聞稿</div>
+                        <a href="#" class="news-title">大專生創新創業比賽頒獎典禮圓滿落幕</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-social" class="tab-content">
+                <h3 style="color: var(--hkngca-blue); border-bottom: 2px solid var(--border-line); padding-bottom: 10px;">官方 Instagram 動態</h3>
+                <p style="color: var(--text-gray); margin-bottom: 30px;">(這裡將會嵌入 Elfsight 或 Curator.io 的 Instagram 網格外掛代碼)</p>
+                
+                <h3 style="color: var(--hkngca-blue); border-bottom: 2px solid var(--border-line); padding-bottom: 10px;">官方 YouTube 頻道</h3>
+                <p style="color: var(--text-gray);">(這裡將會嵌入協會的三個 YouTube 頻道精華影片)</p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        © 2026 香港新一代文化協會 Hong Kong New Generation Cultural Association. All Rights Reserved.
+    </footer>
+
+    <script>
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
