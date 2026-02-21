@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>媒體中心 - 香港新一代文化協會</title>
+    <link rel="icon" href="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png" sizes="32x32" />
+    <style>
+        /* =========================================
+           萃取自官方網站的視覺變數 (Design Tokens)
+           ========================================= */
+        :root {
+            --ng-green: #068f3f;      /* 官方主色：新一代綠 */
+            --ng-orange: #ff9434;     /* 官方輔助色：活力橘 */
+            --bg-body: #ffffff;
+            --bg-gray: #f7f7f7;       /* 官方常用的淺灰背景 */
+            --text-main: #333333;
+            --text-muted: #8c8e91;
+            --border-color: #e0e0e0;
+        }
+
+        /* =========================================
+           基礎重置與字體設定 (對齊官方設定)
+           ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'PingFang HK', 'Microsoft JhengHei', sans-serif !important;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+
+        /* =========================================
+           官方頂部導航列 (Header)
+           ========================================= */
+        .mk-header {
+            background-color: var(--bg-gray);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+        .header-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-logo img {
+            max-width: 250px;
+            height: auto;
+            display: block;
+        }
+        .back-home-btn {
+            color: var(--ng-green);
+            font-weight: bold;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* =========================================
+           頁面主容器
+           ========================================= */
+        .main-container {
+            max-width: 1140px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 70vh;
+        }
+        .page-title {
+            font-size: 22px;
+            color: var(--ng-green);
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--ng-green);
+            padding-left: 15px;
+            line-height: 1.2;
+        }
+
+        /* =========================================
+           主分頁導航 (Tabs) - 解決斷層與擠壓問題
+           ========================================= */
+        .tab-nav {
+            display: flex;
+            background-color: var(--bg-gray);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+        .tab-btn {
+            flex: 1; /* 手機上自動平分寬度，不換行 */
+            text-align: center;
+            padding: 15px 5px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-right: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap; /* 防止文字折行 */
+        }
+        .tab-btn:last-child { border-right: none; }
+        .tab-btn:hover { color: var(--ng-green); }
+        .tab-btn.active {
+            background-color: #ffffff;
+            color: var(--ng-green);
+            border-top: 3px solid var(--ng-green);
+        }
+
+        /* =========================================
+           內容區與次級篩選 (Sub-filters)
+           ========================================= */
+        .tab-content-area {
+            border: 1px solid var(--border-color);
+            border-top: none;
+            padding: 30px;
+            background: #ffffff;
+        }
+        .tab-pane { display: none; animation: fadeIn 0.4s; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 官方風格的膠囊按鈕 */
+        .sub-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: nowrap;
+            overflow-x: auto; /* 手機上可橫滑，避免擠壓 */
+            padding-bottom: 5px;
+        }
+        .sub-filters::-webkit-scrollbar { display: none; }
+        .filter-btn {
+            padding: 8px 24px;
+            border: 2px solid var(--ng-green);
+            border-radius: 50px;
+            background-color: #ffffff;
+            color: var(--ng-green);
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--ng-green);
+            color: #ffffff;
+        }
+
+        /* =========================================
+           新聞列表 (News List) - 徹底解決文字直排問題
+           ========================================= */
+        .news-list { display: flex; flex-direction: column; }
+        .news-item {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column; /* 手機預設上下排列，確保不會擠壓 */
+            gap: 10px;
+        }
+        .news-item:last-child { border-bottom: none; }
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .news-tag {
+            background-color: var(--ng-green);
+            color: #ffffff;
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        /* 區分不同類型的標籤顏色 (例如傳媒報道用橘色) */
+        .news-tag.media-report { background-color: var(--ng-orange); }
+        
+        .news-date {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .news-title {
+            font-size: 16px;
+            color: var(--text-main);
+            font-weight: bold;
+            line-height: 1.5;
+        }
+        .news-title:hover { color: var(--ng-orange); }
+
+        /* =========================================
+           出版刊物卡片 (Documents Grid)
+           ========================================= */
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 手機端並排兩個 */
+            gap: 15px;
+        }
+        .doc-card {
+            border: 1px solid var(--border-color);
+            padding: 20px 15px;
+            text-align: center;
+            background-color: var(--bg-gray);
+            transition: 0.3s;
+        }
+        .doc-card:hover { background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .doc-category { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .doc-title { font-size: 15px; font-weight: bold; color: var(--text-main); margin-bottom: 20px; }
+        
+        /* 官方風格按鈕 */
+        .btn-outline-orange {
+            display: inline-block;
+            border: 2px solid var(--ng-orange);
+            color: var(--ng-orange);
+            background-color: transparent;
+            border-radius: 50px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .btn-outline-orange:hover {
+            background-color: var(--ng-orange);
+            color: #ffffff;
+        }
+
+        /* =========================================
+           官方頁腳 (Footer)
+           ========================================= */
+        .footer {
+            background-color: #e0e0e0;
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 50px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           電腦端/平板端 佈局優化 (Desktop View)
+           ========================================= */
+        @media (min-width: 768px) {
+            .header-logo img { max-width: 300px; }
+            .tab-btn { font-size: 18px; padding: 18px 20px; }
+            .tab-content-area { padding: 40px; }
+            
+            /* 電腦端新聞列表恢復左右並排，佈局更寬廣 */
+            .news-item {
+                flex-direction: row;
+                align-items: center;
+                gap: 30px;
+            }
+            .news-meta {
+                width: 200px;
+                flex-shrink: 0;
+            }
+            .news-title { font-size: 18px; }
+
+            /* 電腦端卡片為四列 */
+            .doc-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        }
+
+        /* 針對極小螢幕 (iPhone SE 等) 的微調 */
+        @media (max-width: 360px) {
+            .tab-btn { font-size: 14px; padding: 12px 2px; }
+            .header-logo img { max-width: 200px; }
+            .doc-grid { grid-template-columns: 1fr; } /* 極小螢幕改為單行 */
+        }
+    </style>
+</head>
+<body>
+
+    <header class="mk-header">
+        <div class="header-inner">
+            <div class="header-logo">
+                <a href="https://newgen.org.hk/">
+                    <img src="https://www.newgen.org.hk/wp-content/uploads/2017/05/bd_big_logo.png" alt="香港新一代文化協會">
+                </a>
+            </div>
+            <a href="https://newgen.org.hk/" class="back-home-btn">返回主頁</a>
+        </div>
+    </header>
+
+    <main class="main-container">
+        
+        <h1 class="page-title">媒體中心</h1>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('news', this)">最新動態</button>
+            <button class="tab-btn" onclick="switchTab('publications', this)">出版刊物</button>
+            <button class="tab-btn" onclick="switchTab('social', this)">社交媒體</button>
+        </nav>
+
+        <section class="tab-content-area">
+            
+            <div id="news" class="tab-pane active">
+                <div class="sub-filters">
+                    <button class="filter-btn active">最新消息</button>
+                    <button class="filter-btn">官方新聞稿</button>
+                    <button class="filter-btn">傳媒報道</button>
+                </div>
+                
+                <div class="news-list">
+                    <article class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag">新聞稿</span>
+                            <span class="news-date">2026-02-15</span>
+                        </div>
+                        <a href="#" class="news-title">香港青少年科技創新大賽開始接受報名</a>
+                    </article>
+                    
+                    <article class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag media-report">傳媒報道</span>
+                            <span class="news-date">2026-01-20</span>
+                        </div>
+                        <a href="#" class="news-title">【星島日報】專訪新一代文化協會：培育未來創科人才</a>
+                    </article>
+                    
+                    <article class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag">新聞稿</span>
+                            <span class="news-date">2025-12-10</span>
+                        </div>
+                        <a href="#" class="news-title">大專生創新創業比賽頒獎典禮圓滿落幕</a>
+                    </article>
+                </div>
+            </div>
+
+            <div id="publications" class="tab-pane">
+                <div class="sub-filters">
+                    <button class="filter-btn active">全部</button>
+                    <button class="filter-btn">年度報告</button>
+                    <button class="filter-btn">特刊</button>
+                    <button class="filter-btn">會訊</button>
+                </div>
+                
+                <div class="doc-grid">
+                    <div class="doc-card">
+                        <div class="doc-category">年度報告</div>
+                        <div class="doc-title">2025年報</div>
+                        <a href="#" class="btn-outline-orange">線上閱覽</a>
+                    </div>
+                    <div class="doc-card">
+                        <div class="doc-category">特刊</div>
+                        <div class="doc-title">50周年紀念特刊</div>
+                        <a href="#" class="btn-outline-orange">線上閱覽</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="social" class="tab-pane">
+                <div class="sub-filters">
+                    <button class="filter-btn active">官方動態</button>
+                    <button class="filter-btn">活動影音</button>
+                </div>
+                <p style="text-align: center; color: var(--text-muted); padding: 50px 0;">
+                    此區塊保留供嵌入官方社群媒體外掛程式（如 Instagram 或 YouTube 網格）。
+                </p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        版權所有 香港新一代文化協會<br>
+        地址 : 香港銅鑼灣道19-23號建康大廈13字樓<br>
+        電話: (852) 2576 4642 | 傳真: (852) 2895 5004
+    </footer>
+
+    <script>
+        function switchTab(tabId, btnElement) {
+            // 隱藏所有內容
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            // 移除所有按鈕的 active 狀態
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 顯示目標內容與設定按鈕狀態
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+    </script>
+</body>
+</html>
