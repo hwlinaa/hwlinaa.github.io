@@ -7,7 +7,7 @@
     <link rel="icon" href="https://stic.newgen.org.hk/wp-content/uploads/2021/11/ng-logo-removebg.png" sizes="32x32" />
     <style>
         /* =========================================
-           視覺變數
+           視覺變數 (Design Tokens)
            ========================================= */
         :root {
             --ng-green: #068f3f;
@@ -37,6 +37,7 @@
         .main-container { max-width: 1140px; margin: 30px auto; padding: 0 15px; min-height: 70vh; }
         .page-title { font-size: 20px; color: var(--ng-green); font-weight: bold; letter-spacing: 1px; margin-bottom: 20px; border-left: 5px solid var(--ng-green); padding-left: 12px; }
         
+        /* 橫向滑動 Tabs (防 4 個按鈕在小手機擠壓) */
         .tab-nav { display: flex; background-color: var(--bg-gray); border: 1px solid var(--border-color); border-bottom: none; border-radius: 8px 8px 0 0; overflow-x: auto; flex-wrap: nowrap; }
         .tab-nav::-webkit-scrollbar { display: none; }
         .tab-btn { flex: 1 1 auto; text-align: center; padding: 14px 10px; font-size: 15px; font-weight: bold; color: var(--text-muted); background: transparent; border: none; border-right: 1px solid var(--border-color); cursor: pointer; white-space: nowrap; transition: 0.2s; }
@@ -82,7 +83,7 @@
         .btn-outline-orange:hover { background-color: var(--ng-orange); color: #ffffff; }
 
         /* =========================================
-           區塊 3: 社交媒體 (總部/附屬中心)
+           區塊 3: 社交媒體 (總部/附屬中心/屬會)
            ========================================= */
         .social-org-section { margin-bottom: 35px; }
         .org-header { display: flex; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
@@ -100,10 +101,9 @@
         .icon-xhs { background-color: #ff2442; }
         .icon-yt { background-color: #FF0000; }
         .icon-wa { background-color: #25D366; }
+        .icon-wa-channel { background: linear-gradient(135deg, #25D366, #128C7E); }
 
-        /* =========================================
-           🌟 全新：屬會簡介卡片 (Club Grid)
-           ========================================= */
+        /* 屬會簡介卡片 (Club Grid) */
         .club-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .club-card { display: flex; align-items: flex-start; background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; transition: 0.3s; }
         .club-card:hover { border-color: var(--ng-green); box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
@@ -125,15 +125,28 @@
         .album-item:hover { border-color: var(--ng-green); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .album-date { font-size: 13px; color: var(--text-muted); width: 90px; flex-shrink: 0; font-weight: bold; }
         .album-title { font-size: 15px; font-weight: bold; color: var(--text-main); flex: 1; padding-right: 15px; line-height: 1.4; }
-        .album-btn { display: inline-block; padding: 6px 16px; background-color: var(--bg-gray); color: var(--ng-green); border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; font-weight: bold; flex-shrink: 0; text-align: center; }
+        .album-btn { display: inline-block; padding: 6px 16px; background-color: var(--bg-gray); color: var(--ng-green); border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px; font-weight: bold; flex-shrink: 0; text-align: center; transition: 0.2s; }
         .album-item:hover .album-btn { background-color: var(--ng-green); color: #ffffff; border-color: var(--ng-green); }
 
         /* =========================================
-           頁腳
+           企業級頁腳 (Corporate Footer)
            ========================================= */
-        .footer { background-color: #f3f4f6; padding: 30px 15px; text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 40px; line-height: 1.8; }
+        .corporate-footer { background-color: #f8f9fa; border-top: 4px solid var(--ng-green); padding: 50px 20px 0; color: var(--text-main); font-size: 14px; margin-top: 60px; }
+        .footer-container { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px; padding-bottom: 40px; }
+        .footer-col-title { font-size: 16px; font-weight: bold; color: var(--ng-green); margin-bottom: 20px; letter-spacing: 1px; }
+        
+        .footer-list { list-style: none; padding: 0; margin: 0; }
+        .footer-list li { margin-bottom: 12px; color: var(--text-muted); display: flex; align-items: flex-start; line-height: 1.5; }
+        .footer-links li a { color: var(--text-muted); transition: color 0.2s; }
+        .footer-links li a:hover { color: var(--ng-orange); text-decoration: underline; }
+        
+        .footer-brand-desc { color: var(--text-muted); line-height: 1.6; margin-bottom: 15px; text-align: justify; }
+        .footer-charity-badge { display: inline-block; background-color: var(--border-color); color: var(--text-muted); font-size: 12px; padding: 4px 10px; border-radius: 4px; font-weight: bold; }
+        .footer-bottom-bar { background-color: #e5e7eb; padding: 20px; text-align: center; color: var(--text-muted); font-size: 12px; }
 
-        /* 電腦端佈局優化 */
+        /* =========================================
+           電腦端佈局優化
+           ========================================= */
         @media (min-width: 768px) {
             .header-inner { padding: 0 20px; }
             .header-logo img { max-width: 280px; }
@@ -147,16 +160,18 @@
             .doc-item { flex-direction: row; align-items: flex-start; justify-content: space-between; padding: 25px; }
             .doc-content { flex: 1; padding-right: 40px; }
             .doc-action { width: 120px; flex-shrink: 0; text-align: right; margin-top: 25px; }
+            .doc-summary { margin-bottom: 0; }
             
             .social-clean-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; }
             .clean-btn { font-size: 14px; padding: 15px; }
-            
-            /* 電腦端屬會卡片為左右兩排 */
             .club-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
             
             .album-item { padding: 20px; }
             .album-date { width: 120px; font-size: 14px; }
             .album-title { font-size: 16px; }
+
+            /* 頁腳變為 3 欄 */
+            .footer-container { grid-template-columns: 2fr 1.5fr 1fr; gap: 60px; }
         }
     </style>
 </head>
@@ -164,8 +179,12 @@
 
     <header class="mk-header">
         <div class="header-inner">
-            <div class="header-logo"><a href="#"><img src="https://www.newgen.org.hk/wp-content/uploads/2017/05/bd_big_logo.png" alt="香港新一代文化協會"></a></div>
-            <a href="#" class="back-home-btn">返回主頁</a>
+            <div class="header-logo">
+                <a href="https://newgen.org.hk/">
+                    <img src="https://www.newgen.org.hk/wp-content/uploads/2017/05/bd_big_logo.png" alt="香港新一代文化協會">
+                </a>
+            </div>
+            <a href="https://newgen.org.hk/" class="back-home-btn">返回主頁</a>
         </div>
     </header>
 
@@ -214,18 +233,32 @@
                 <div class="doc-list">
                     <div class="doc-item">
                         <div class="doc-content">
-                            <div class="doc-header"><div class="doc-category">年報</div><div class="doc-title">2025 年報</div></div>
-                            <div class="doc-summary">2025年是香港新一代文化協會豐收的一年。本年報詳盡紀錄了協會在推動 STEM 教育、國情教育及領袖培訓等核心領域的重大進展。今年我們成功舉辦了超過 50 場大型學生活動，並協助多支香港代表隊在全國及國際創科賽事中屢獲殊榮。報告內亦包含本會經審計之財務狀況及未來發展展望。</div>
+                            <div class="doc-header">
+                                <div class="doc-category">年報</div>
+                                <div class="doc-title">2025 年報</div>
+                            </div>
+                            <div class="doc-summary">
+                                2025年是香港新一代文化協會豐收的一年。本年報詳盡紀錄了協會在推動 STEM 教育、國情教育及領袖培訓等核心領域的重大進展。今年我們成功舉辦了超過 50 場大型學生活動，並協助多支香港代表隊在全國及國際創科賽事中屢獲殊榮。報告內亦包含本會經審計之財務狀況及未來發展展望。
+                            </div>
                         </div>
-                        <div class="doc-action"><a href="#" class="btn-outline-orange">線上閱覽</a></div>
+                        <div class="doc-action">
+                            <a href="#" class="btn-outline-orange">線上閱覽</a>
+                        </div>
                     </div>
 
                     <div class="doc-item">
                         <div class="doc-content">
-                            <div class="doc-header"><div class="doc-category">特刊</div><div class="doc-title">50 周年紀念特刊</div></div>
-                            <div class="doc-summary">走過半世紀，初心不變。本特刊回顧了協會自 1974 年成立以來的發展歷程，收錄了歷屆主席、校友及合作夥伴的珍貴訪談與老照片，見證幾代香港青年人的成長軌跡與奮鬥故事。</div>
+                            <div class="doc-header">
+                                <div class="doc-category">特刊</div>
+                                <div class="doc-title">50 周年紀念特刊</div>
+                            </div>
+                            <div class="doc-summary">
+                                走過半世紀，初心不變。本特刊回顧了協會自 1974 年成立以來的發展歷程，收錄了歷屆主席、校友及合作夥伴的珍貴訪談與老照片，見證幾代香港青年人的成長軌跡與奮鬥故事。
+                            </div>
                         </div>
-                        <div class="doc-action"><a href="#" class="btn-outline-orange">線上閱覽</a></div>
+                        <div class="doc-action">
+                            <a href="#" class="btn-outline-orange">線上閱覽</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -242,7 +275,7 @@
                         <a href="#" class="clean-btn"><div class="brand-icon icon-xhs">紅</div> 小紅書</a>
                         <a href="#" class="clean-btn"><div class="brand-icon icon-yt">▶</div> YouTube 頻道</a>
                         <a href="#" class="clean-btn"><div class="brand-icon icon-wa">💬</div> WhatsApp 查詢</a>
-                        <a href="#" class="clean-btn"><div class="brand-icon icon-wa" style="background:#128C7E;">📢</div> WhatsApp 頻道</a>
+                        <a href="#" class="clean-btn"><div class="brand-icon icon-wa-channel">📢</div> WhatsApp 頻道</a>
                     </div>
                 </div>
 
@@ -368,7 +401,6 @@
 
                     </div>
                 </div>
-
             </div>
 
             <div id="albums" class="tab-pane">
@@ -402,10 +434,54 @@
         </section>
     </main>
 
-    <footer class="footer">
-        版權所有 香港新一代文化協會<br>
-        地址 : 香港銅鑼灣道19-23號建康大廈13字樓<br>
-        電話: (852) 2576 4642 | 傳真: (852) 2895 5004
+    <footer class="corporate-footer">
+        <div class="footer-container">
+            
+            <div class="footer-col">
+                <div class="footer-col-title">香港新一代文化協會</div>
+                <div class="footer-brand-desc">
+                    創立於 1974 年，一直秉承「視野、創新、博識、承擔」的宗旨，為本港教育界提供多元化的活動及服務，致力培育具有博識及植根香港的新一代青年領袖與創科人才。
+                </div>
+                <div class="footer-charity-badge">政府認可之公共性質慈善機構</div>
+            </div>
+
+            <div class="footer-col">
+                <div class="footer-col-title">聯絡我們</div>
+                <ul class="footer-list">
+                    <li>
+                        <span style="width: 50px; flex-shrink: 0; font-weight: bold;">地址：</span>
+                        <span>香港銅鑼灣道 19-23 號建康大廈 13 字樓</span>
+                    </li>
+                    <li>
+                        <span style="width: 50px; flex-shrink: 0; font-weight: bold;">電話：</span>
+                        <span>(852) 2576 4642</span>
+                    </li>
+                    <li>
+                        <span style="width: 50px; flex-shrink: 0; font-weight: bold;">傳真：</span>
+                        <span>(852) 2895 5004</span>
+                    </li>
+                    <li>
+                        <span style="width: 50px; flex-shrink: 0; font-weight: bold;">電郵：</span>
+                        <span>hkngca@newgen.org.hk</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <div class="footer-col-title">快速連結</div>
+                <ul class="footer-list footer-links">
+                    <li><a href="https://newgen.org.hk/%e5%85%8d%e8%b2%ac%e8%81%b2%e6%98%8e%e5%8f%8a%e7%a7%81%e9%9a%b1%e6%94%bf%e7%ad%96/">免責聲明及私隱政策</a></li>
+                    <li><a href="https://newgen.org.hk/recruit/">職位空缺</a></li>
+                    <li><a href="https://stic.newgen.org.hk/portal">員工系統登入 (Portal)</a></li>
+                    <li><a href="https://s0101.gopls.com/webmail">員工 Webmail</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom-bar">
+            © 2026 香港新一代文化協會 Hong Kong New Generation Cultural Association. All Rights Reserved.
+        </div>
     </footer>
 
     <script>
