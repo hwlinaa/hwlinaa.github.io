@@ -3,103 +3,176 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>香港新一代文化協會 - 媒體中心</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>媒體中心 - 香港新一代文化協會</title>
     <style>
+        /* --- 企業化視覺變數 --- */
         :root {
-            --primary-color: #004a99;
-            --hover-color: #003366;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
+            --brand-blue: #003A79;
+            /* 機構主色：深藍 */
+            --brand-red: #C41230;
+            /* 機構副色：棗紅 */
+            --bg-color: #F5F7FA;
+            /* 專業的淺灰背景 */
             --text-main: #333333;
-            --text-muted: #666666;
-            --border-color: #e0e0e0;
+            /* 主要文字 */
+            --text-light: #777777;
+            /* 次要文字 */
+            --border-color: #E2E8F0;
+            /* 柔和的邊框色 */
+        }
+
+        /* --- 基礎設定 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, 'Microsoft JhengHei', sans-serif;
+            font-family: 'PingFang HK', 'Microsoft JhengHei', 'Helvetica Neue', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0;
-            padding: 40px 20px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 1200px;
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- 頂部導航列 (修復擠壓問題) --- */
+        .header {
+            background-color: #FFFFFF;
+            border-top: 4px solid var(--brand-red);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1000px;
             margin: 0 auto;
-        }
-
-        .header-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .header-section h2 {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .header-section p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        /* --- Tabs 導航設計 --- */
-        .tabs {
+            padding: 12px 16px;
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            /* 防止文字過長撐破 */
+        }
+
+        .brand-logo {
+            background-color: var(--brand-blue);
+            color: #FFFFFF;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            color: var(--brand-blue);
+            font-weight: bold;
+            font-size: 1.05rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .back-btn {
+            color: var(--brand-blue);
+            font-size: 0.9rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            padding-left: 10px;
+        }
+
+        /* --- 主要內容區 --- */
+        .container {
+            max-width: 1000px;
+            margin: 24px auto;
+            padding: 0 16px;
+            min-height: 80vh;
+        }
+
+        .page-title {
+            font-size: 1.4rem;
+            color: var(--brand-blue);
+            border-left: 4px solid var(--brand-red);
+            padding-left: 12px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* --- 分頁標籤列 (Tabs) - 修復斷層問題 --- */
+        .tab-nav {
+            display: flex;
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            overflow: hidden;
         }
 
         .tab-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
+            flex: 1;
+            /* 確保三個按鈕在手機上平均分配，不換行 */
+            text-align: center;
+            padding: 14px 4px;
+            font-size: 0.95rem;
             font-weight: bold;
-            color: var(--text-muted);
-            padding: 10px 25px;
+            color: var(--text-light);
+            background-color: #FAFAFA;
+            border: none;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
+            transition: 0.2s;
         }
 
-        .tab-btn:hover {
-            color: var(--primary-color);
+        .tab-btn:last-child {
+            border-right: none;
         }
 
         .tab-btn.active {
-            color: var(--primary-color);
+            background-color: #FFFFFF;
+            color: var(--brand-blue);
+            border-bottom: 3px solid var(--brand-red);
         }
 
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: var(--primary-color);
-            border-radius: 4px 4px 0 0;
+        /* --- 內容面板 --- */
+        .tab-content-area {
+            background-color: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            padding: 20px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
         }
 
-        /* --- 內容區域切換 --- */
-        .tab-content {
+        .tab-pane {
             display: none;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease;
         }
 
-        .tab-content.active {
+        .tab-pane.active {
             display: block;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(5px);
             }
 
             to {
@@ -108,260 +181,282 @@
             }
         }
 
-        /* --- 模組 1: 出版刊物網格 (沿用之前的設計) --- */
+        /* --- 次級篩選按鈕 --- */
         .sub-filters {
-            text-align: center;
-            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            /* 手機上如果按鈕太多可橫向滑動 */
+            white-space: nowrap;
         }
 
-        .sub-filters button {
-            padding: 6px 15px;
-            margin: 0 5px;
+        .sub-filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 隱藏滾動條保持簡潔 */
+        .filter-btn {
+            padding: 6px 16px;
+            border: 1px solid var(--border-color);
             border-radius: 20px;
-            border: 1px solid var(--primary-color);
-            background: #fff;
-            color: var(--primary-color);
+            background-color: #FFFFFF;
+            color: var(--text-light);
+            font-size: 0.9rem;
             cursor: pointer;
         }
 
-        .sub-filters button.active,
-        .sub-filters button:hover {
-            background: var(--primary-color);
-            color: #fff;
-        }
-
-        .report-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .report-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .pdf-icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-        }
-
-        .report-title {
-            font-size: 1.1rem;
+        .filter-btn.active {
+            background-color: var(--brand-blue);
+            border-color: var(--brand-blue);
+            color: #FFFFFF;
             font-weight: bold;
-            margin-bottom: 15px;
         }
 
-        .read-btn {
-            display: inline-block;
-            padding: 8px 15px;
-            background: var(--primary-color);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-
-        /* --- 模組 2: 新聞列表設計 --- */
+        /* --- 新聞列表 (修復標籤擠壓問題) --- */
         .news-list {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
         }
 
         .news-item {
+            padding: 16px 0;
+            border-bottom: 1px dashed var(--border-color);
             display: flex;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-color);
+            flex-direction: column;
+            /* 手機端改為上下排列，防止擠壓 */
+            gap: 8px;
         }
 
         .news-item:last-child {
             border-bottom: none;
         }
 
-        .news-date {
-            width: 120px;
-            color: var(--primary-color);
-            font-weight: bold;
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .news-tag {
-            background: #e9ecef;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            margin-right: 15px;
-            color: #555;
+            background-color: var(--brand-blue);
+            color: #FFFFFF;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        .news-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-family: Arial, sans-serif;
         }
 
         .news-title {
-            flex-grow: 1;
-            font-size: 1.1rem;
-            color: var(--text-main);
-            text-decoration: none;
+            font-size: 1.05rem;
             font-weight: bold;
+            color: var(--text-main);
+            line-height: 1.4;
         }
 
         .news-title:hover {
-            color: var(--primary-color);
-            text-decoration: underline;
+            color: var(--brand-red);
         }
 
-        /* --- 模組 3: YouTube 影音網格 --- */
-        .channel-section {
-            margin-bottom: 40px;
-        }
-
-        .channel-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            border-left: 5px solid red;
-            padding-left: 10px;
-        }
-
-        .video-grid {
+        /* --- 卡片網格 (出版刊物) --- */
+        .doc-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            /* 手機端強制一行兩格 */
+            gap: 12px;
         }
 
-        .video-card {
-            background: var(--card-bg);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .video-thumbnail {
-            width: 100%;
-            height: 180px;
-            background-color: #ddd;
+        .doc-card {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 16px 12px;
+            text-align: center;
+            background-color: #FFFFFF;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 3rem;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .video-info {
-            padding: 15px;
-        }
-
-        .video-title {
-            font-size: 1rem;
+        .doc-type {
+            font-size: 0.8rem;
+            color: var(--brand-red);
+            margin-bottom: 8px;
             font-weight: bold;
-            line-height: 1.4;
+        }
+
+        .doc-title {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .doc-action {
+            display: block;
+            width: 100%;
+            padding: 8px 0;
+            background-color: var(--bg-color);
+            color: var(--brand-blue);
+            font-size: 0.9rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        /* --- 電腦端佈局優化 (Desktop View) --- */
+        @media (min-width: 768px) {
+            .brand-name {
+                font-size: 1.25rem;
+            }
+
+            .tab-btn {
+                font-size: 1.1rem;
+                padding: 16px 20px;
+            }
+
+            /* 電腦端新聞列表恢復左右排列，更具閱讀性 */
+            .news-item {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 24px;
+                padding: 20px 0;
+            }
+
+            .news-meta {
+                width: 180px;
+                flex-shrink: 0;
+                display: flex;
+                justify-content: space-between;
+                flex-direction: row-reverse;
+            }
+
+            .news-date {
+                font-weight: bold;
+            }
+
+            .news-title {
+                font-size: 1.15rem;
+            }
+
+            /* 電腦端文檔卡片為 4 格 */
+            .doc-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="header-section">
-            <h2>媒體中心 Media Center</h2>
-            <p>掌握香港新一代文化協會的最新動態、出版刊物及精彩影音</p>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('tab-publications')">📚 出版刊物</button>
-            <button class="tab-btn" onclick="openTab('tab-news')">📰 新聞與動態</button>
-            <button class="tab-btn" onclick="openTab('tab-videos')">🎥 影音專區</button>
-        </div>
-
-        <div id="tab-publications" class="tab-content active">
-            <div class="sub-filters">
-                <button class="active">全部</button>
-                <button>年報</button>
-                <button>特刊</button>
-                <button>會訊</button>
+    <header class="header">
+        <div class="header-inner">
+            <div class="brand-area">
+                <div class="brand-logo">HKNGCA</div>
+                <div class="brand-name">香港新一代文化協會</div>
             </div>
-            <div class="report-grid">
-                <div class="report-card">
-                    <div class="pdf-icon">📄</div>
-                    <div class="report-title">2025年報</div>
-                    <a href="#" class="read-btn">線上閱覽</a>
-                </div>
-                <div class="report-card">
-                    <div class="pdf-icon">📘</div>
-                    <div class="report-title">50周年紀念特刊</div>
-                    <a href="#" class="read-btn">線上閱覽</a>
-                </div>
-                <div class="report-card">
-                    <div class="pdf-icon">📰</div>
-                    <div class="report-title">2024 秋季會訊</div>
-                    <a href="#" class="read-btn">線上閱覽</a>
-                </div>
-            </div>
+            <a href="#" class="back-btn">返回主頁</a>
         </div>
+    </header>
 
-        <div id="tab-news" class="tab-content">
-            <div class="sub-filters">
-                <button class="active">全部</button>
-                <button>官方新聞稿</button>
-                <button>傳媒報道</button>
-            </div>
-            <div class="news-list">
-                <div class="news-item">
-                    <div class="news-date">2025-10-15</div>
-                    <div class="news-tag">新聞稿</div>
-                    <a href="#" class="news-title">香港青少年科技創新大賽 2025 圓滿落幕</a>
-                </div>
-                <div class="news-item">
-                    <div class="news-date">2025-09-02</div>
-                    <div class="news-tag">傳媒報道</div>
-                    <a href="#" class="news-title">【星島日報】專訪新一代文化協會：培育未來創科人才</a>
-                </div>
-            </div>
-        </div>
+    <main class="container">
+        <h1 class="page-title">媒體中心</h1>
 
-        <div id="tab-videos" class="tab-content">
-            <div class="channel-section">
-                <h3 class="channel-title">官方主頻道 (活動精華)</h3>
-                <div class="video-grid">
-                    <div class="video-card">
-                        <div class="video-thumbnail">▶</div>
-                        <div class="video-info">
-                            <div class="video-title">50周年會慶晚宴精華片段</div>
-                        </div>
+        <nav class="tab-nav">
+            <button class="tab-btn" onclick="switchTab('publications', this)">出版刊物</button>
+            <button class="tab-btn active" onclick="switchTab('news', this)">新聞與動態</button>
+            <button class="tab-btn" onclick="switchTab('social', this)">社交媒體</button>
+        </nav>
+
+        <section class="tab-content-area">
+
+            <div id="publications" class="tab-pane">
+                <div class="sub-filters">
+                    <button class="filter-btn active">全部</button>
+                    <button class="filter-btn">年度報告</button>
+                    <button class="filter-btn">特刊</button>
+                    <button class="filter-btn">會訊</button>
+                </div>
+                <div class="doc-grid">
+                    <div class="doc-card">
+                        <div class="doc-type">【年度報告】</div>
+                        <div class="doc-title">2025年報</div>
+                        <a href="#" class="doc-action">線上閱覽</a>
+                    </div>
+                    <div class="doc-card">
+                        <div class="doc-type">【特刊】</div>
+                        <div class="doc-title">50周年紀念特刊</div>
+                        <a href="#" class="doc-action">線上閱覽</a>
                     </div>
                 </div>
             </div>
-            <div class="channel-section">
-                <h3 class="channel-title">STEM 教育頻道</h3>
-                <div class="video-grid">
-                    <div class="video-card">
-                        <div class="video-thumbnail">▶</div>
-                        <div class="video-info">
-                            <div class="video-title">科學創新工作坊：AI 機器人製作</div>
+
+            <div id="news" class="tab-pane active">
+                <div class="sub-filters">
+                    <button class="filter-btn active">最新消息</button>
+                    <button class="filter-btn">官方新聞稿</button>
+                    <button class="filter-btn">傳媒報道</button>
+                </div>
+                <div class="news-list">
+                    <article class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag">新聞稿</span>
+                            <span class="news-date">2026-02-15</span>
                         </div>
-                    </div>
+                        <a href="#" class="news-title">香港青少年科技創新大賽開始接受報名</a>
+                    </article>
+                    <article class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag" style="background-color: var(--text-light);">傳媒報道</span>
+                            <span class="news-date">2026-01-20</span>
+                        </div>
+                        <a href="#" class="news-title">【星島日報】專訪新一代文化協會：培育未來創科人才</a>
+                    </article>
+                    <article class="news-item">
+                        <div class="news-meta">
+                            <span class="news-tag">新聞稿</span>
+                            <span class="news-date">2025-12-10</span>
+                        </div>
+                        <a href="#" class="news-title">大專生創新創業比賽頒獎典禮圓滿落幕</a>
+                    </article>
                 </div>
             </div>
-        </div>
 
-    </div>
+            <div id="social" class="tab-pane">
+                <div class="sub-filters">
+                    <button class="filter-btn active">官方動態</button>
+                    <button class="filter-btn">活動影音</button>
+                </div>
+                <p style="text-align: center; color: var(--text-light); padding: 40px 0;">
+                    （此處將嵌入社交媒體及影音內容）
+                </p>
+            </div>
+
+        </section>
+    </main>
 
     <script>
-        // 控制 Tab 切換的簡單邏輯
-        function openTab(tabId) {
-            // 隱藏所有內容
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+        // 分頁切換邏輯
+        function switchTab(tabId, btnElement) {
+            // 隱藏所有內容面板
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
             });
-            // 移除所有按鈕的 active 狀態
+            // 移除所有標籤的啟用狀態
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
 
-            // 顯示被點擊的內容
+            // 顯示目標內容與啟用點擊的標籤
             document.getElementById(tabId).classList.add('active');
-            // 將點擊的按鈕設為 active
-            event.currentTarget.classList.add('active');
+            btnElement.classList.add('active');
         }
     </script>
 </body>
