@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>證書查詢系統 - 香港新一代文化協會</title>
+    <title>證書驗證系統 - 香港新一代文化協會</title>
     <script>
-        const SITE_CONFIG = { title: "香港新一代文化協會", subTitle: "證書查詢系統" };
+        // 正名副標題
+        const SITE_CONFIG = { title: "香港新一代文化協會", subTitle: "證書驗證系統" };
     </script>
     <style>
         :root { --primary-blue: #0A3D91; --accent-orange: #F28C28; --bg-color: #F4F7FB; --card-bg: #FFFFFF; --text-main: #333333; --text-muted: #666666; --border-radius: 12px; --menu-bg: #072a66; --border-color: #cbd5e1; }
@@ -75,10 +76,10 @@
 
     <div class="side-menu" id="sideMenu">
         <button class="close-btn" onclick="toggleMenu()">×</button>
-        <a href="index.html">🏆 證書查詢</a>
-        <a href="https://newgen.org.hk" target="_blank">🌐 官方網站</a>
-        <a href="https://app.jotform.com/243098567658474" target="_blank">📱 新一代 App</a>
-        <a href="https://www.ewgen.org.hk/contact_us">📧 聯絡我們</a>
+        <a href="index.html">證書驗證</a>
+        <a href="https://stic.newgen.org.hk" target="_blank">活動網站</a>
+        <a href="https://app.jotform.com/243098567658474" target="_blank">新一代 App</a>
+        <a href="https://stic.newgen.org.hk/聯絡我們/">聯絡我們</a>
     </div>
 
     <div class="container">
@@ -101,7 +102,7 @@
                 <input type="text" id="token" placeholder="請輸入 12 位證書驗證碼" maxlength="12"
                     oninput="this.value=this.value.replace(/[^A-Za-z0-9\-_]/g,'');">
             </div>
-            <button id="btn-verify" class="btn-primary" onclick="verifyToken()">查詢證書</button>
+            <button id="btn-verify" class="btn-primary" onclick="verifyToken()">驗證證書</button>
             <div id="verify-msg" class="alert"></div>
 
             <div id="verify-result" class="result-box">
@@ -128,7 +129,7 @@
                 <input type="email" id="req-email" placeholder="需與登記資料一致">
             </div>
             <div class="form-group">
-                <label for="req-student">中文姓名</label>
+                <label for="req-student">姓名 (參賽者 / 義工 / 幹事)</label>
                 <input type="text" id="req-student" placeholder="需與登記資料一致">
             </div>
             <div class="form-group">
@@ -141,7 +142,7 @@
                     <select id="req-event-base" class="form-select">
                         <option value="香港青少年科技創新大賽">香港青少年科技創新大賽</option>
                         <option value="香港青少年航天創新大賽">香港青少年航天創新大賽</option>
-                        <option value="英才盃—STEAM教育挑戰賽">英才盃—STEAM教育挑戰賽</option>
+                        <option value="「英才盃—STEAM教育挑戰賽」">「英才盃—STEAM教育挑戰賽」</option>
                     </select>
                 </div>
             </div>
@@ -164,7 +165,6 @@
 
         /* Staging */ const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
         /* PRODUCTION */ /* const API_URL = "https://script.google.com/macros/s/AKfycbx7hekhJ-1cxh8xPws5YYcQG7GkTXMJEO0J_rEJe6UN6ThbgHOZBABFOPh_ENZX2MvH1A/exec"; */
-
         function switchTab(tabId) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -217,7 +217,6 @@
                         document.getElementById('r-role').innerText = result.data.role;
                         document.getElementById('r-event').innerText = result.data.eventName;
                         
-                        // [新增] 智慧隱藏邏輯：有資料才顯示，無資料則隱藏該行
                         const groupRow = document.getElementById('row-group');
                         if (result.data.group) {
                             document.getElementById('r-group').innerText = result.data.group;
@@ -250,7 +249,8 @@
                 showMessage('verify-msg', false, '網路連線異常，請確認伺服器狀態。');
             } finally {
                 btn.disabled = false;
-                btn.innerText = '查詢證書';
+                // 正名按鈕復原文字
+                btn.innerText = '驗證證書';
             }
         }
 
