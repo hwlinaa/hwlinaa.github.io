@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HKNGCA @ Geneva Inventions</title>
+    <style>
+        :root {
+            --primary-red: #D32F2F;
+            --dark-red: #9A0007;
+            --accent-gold: #FFB300;
+            --bg-color: #F4F6F9;
+            --text-dark: #2D3748;
+            --booth-blue: #1A365D;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            position: relative;
+            padding-bottom: 40px;
+        }
+
+        /* --- 全新設計的純靜態質感標頭 --- */
+        .hero-header {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: white;
+            padding: 50px 20px 60px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 背景的 HKNGCA 浮水印效果 (純 CSS，不佔流量) */
+        .hero-header::after {
+            content: "HKNGCA";
+            position: absolute;
+            bottom: -15px;
+            right: -10px;
+            font-size: 5.5rem;
+            font-weight: 900;
+            opacity: 0.06;
+            line-height: 1;
+            letter-spacing: -2px;
+            pointer-events: none;
+        }
+
+        .hero-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- 項目與展位列表區 (改為浮動卡片風格) --- */
+        .projects-section {
+            padding: 20px;
+            margin: -30px 15px 20px 15px; /* 向上浮動，疊在紅色背景上 */
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--booth-blue);
+            border-bottom: 3px solid var(--accent-gold);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .project-item {
+            display: flex;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .booth-id {
+            background-color: var(--booth-blue);
+            color: var(--accent-gold);
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            flex-direction: column;
+        }
+        
+        .booth-id span {
+            font-size: 0.6rem;
+            color: white;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+
+        .project-details {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .project-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin: 0;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        /* --- About Us 區塊 --- */
+        .about-section {
+            padding: 0 20px 20px 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #4A5568;
+        }
+
+        .about-section p {
+            margin-bottom: 15px;
+        }
+
+        .highlight-text {
+            color: var(--primary-red);
+            font-weight: 600;
+        }
+
+        /* --- 聯絡按鈕 --- */
+        .contact-section {
+            padding: 10px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px 0;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            transition: transform 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-red);
+            color: white;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--booth-blue);
+            border: 2px solid var(--booth-blue);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <div class="hero-header">
+            <h1>Hong Kong New Generation<br>Cultural Association</h1>
+        </div>
+
+        <div class="projects-section">
+            <div class="section-title">Our Inventions @ Geneva</div>
+
+            <div class="project-item">
+                <div class="booth-id"><span>Booth</span>I29</div>
+                <div class="project-details">
+                    <h3 class="project-name">PestiGuard</h3>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <div class="booth-id"><span>Booth</span>I27</div>
+                <div class="project-details">
+                    <h3 class="project-name">Development of Nanowire Array as 3D Photocathode for Green Hydrogen Production</h3>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <div class="booth-id"><span>Booth</span>I25</div>
+                <div class="project-details">
+                    <h3 class="project-name">Utilizing Rice Bran and Soybean Extracts to Synthesise Fire-retardant Materials</h3>
+                </div>
+            </div>
+
+            <div class="project-item">
+                <div class="booth-id"><span>Booth</span>I23</div>
+                <div class="project-details">
+                    <h3 class="project-name">Chinese Couscous: A Mushroom Based Grain Staple for Global Nutrition</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <div class="section-title">About Us</div>
+            [span_0](start_span)<p>The <span class="highlight-text">Hong Kong New Generation Cultural Association</span> is an education and training institution and a public charitable organization recognized by the government, established in 1974[span_0](end_span).</p>
+            
+            [span_1](start_span)<p>To firmly promote STEAM education, the Association established the <span class="highlight-text">Hong Kong New Generation Cultural Association Science Innovation Centre (SIC)</span> in 2006[span_1](end_span).</p>
+            
+            [span_2](start_span)<p>To promote innovation and entrepreneurship to youth and facilitate relevant development in Hong Kong, HKNGCA established the <span class="highlight-text">Innovation and Entrepreneurship Center (IEC)</span> in 2016[span_2](end_span).</p>
+            
+            [span_3](start_span)<p>We actively participate in the world's most prestigious international science competitions, including the <span class="highlight-text">Geneva International Exhibition of Inventions (Geneva)</span> and the Regeneron International Science and Engineering Fair (ISEF)[span_3](end_span).</p>
+        </div>
+
+        <div class="contact-section">
+            <a href="mailto:hkngca@newgen.org.hk?subject=Inquiry from Geneva Inventions" class="btn btn-primary">
+                ✉️ Email Us Now
+            </a>
+            <a href="https://www.newgen.org.hk" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                🌐 Visit Our Website
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
