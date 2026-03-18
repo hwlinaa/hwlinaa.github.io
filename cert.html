@@ -84,7 +84,7 @@
         <a href="index.html">證書驗證<br><span style="font-size:0.8rem;opacity:0.8;">Certificate Verification</span></a>
         <a href="https://newgen.org.hk" target="_blank">新一代官網<br><span style="font-size:0.8rem;opacity:0.8;">Official Website</span></a>
         <a href="https://app.jotform.com/243098567658474" target="_blank">新一代 App<br><span style="font-size:0.8rem;opacity:0.8;">HKNGCA App</span></a>
-        <a href="https://stic.newgen.org.hk/聯絡我們/">聯絡我們<br><span style="font-size:0.8rem;opacity:0.8;">Contact Us</span></a>
+        <a href="https://newgen.org.hk/contact_us/">聯絡我們<br><span style="font-size:0.8rem;opacity:0.8;">Contact Us</span></a>
     </div>
 
     <div class="container">
@@ -176,7 +176,8 @@
             document.getElementById('overlay').classList.toggle('show');
         }
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
+        /* Staging */ const API_URL = "https://script.google.com/macros/s/AKfycbyJT3TpJ3FHJqc1m3vvkIwLMb3JWQG1H8SA3mXQFsbMKaVWy_e_dQB3w-ytaojgpj5mBA/exec";
+        /* PRODUCTION */ /* const API_URL = "https://script.google.com/macros/s/AKfycbx7hekhJ-1cxh8xPws5YYcQG7GkTXMJEO0J_rEJe6UN6ThbgHOZBABFOPh_ENZX2MvH1A/exec"; */
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
