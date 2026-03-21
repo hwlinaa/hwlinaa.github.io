@@ -300,6 +300,13 @@
             margin-bottom: 4px;
         }
 
+        /* 🥇 優秀STEAM學校 (金色) */
+        .badge-steam-school {
+            background: #FEF9C3;
+            color: #854D0E;
+            border: 1px solid #EAB308;
+        }
+
         /* 🥇 一等獎 (金色) */
         .badge-1st {
             background: #FEF9C3;
@@ -661,10 +668,12 @@
                             addBadge('二等獎', 'badge-2nd');
                         } else if (awardText.includes('三等')) {
                             addBadge('三等獎', 'badge-3rd');
-                        } else if (awardText.includes('初評優異')) { // ✅ 先檢查初評優異，避免被「優異」抓到
+                        } else if (awardText.includes('初評優異')) {
                             addBadge('初評優異獎', 'badge-prelim');
                         } else if (awardText.includes('優異')) {
                             addBadge('優異獎', 'badge-merit');
+                        } else if (awardText.includes('學校')) {
+                            addBadge('優秀STEAM學校', 'badge-steam-school');
                         }
                     } else {
                         // 如果沒有獎項資料
