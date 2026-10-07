@@ -1,0 +1,30 @@
+# macOS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor and temporary files
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+*.tmp
+*.log
+
+# Local credentials
+.env
+.env.*
+!.env.example
+
+# Local working material, backups and previews
+/work/
+/outputs/
+/backups/
+/preview/
+
+# Generated Jekyll output and caches
+/_site/
+/.jekyll-cache/
+/.sass-cache/
