@@ -3,8 +3,8 @@
 Static trilingual academic website adapted from Jon Barron’s supplied source template, with format and wording references from Jacky Li’s website.
 
 ## Standard
-- 800px maximum width; Lato 14px body, 32px name, 22px section headings.
-- Original blue links, orange hover, 160px research images and pale-yellow selected row.
+- 800px maximum reading width; Lato with Chinese system-font fallbacks, 1rem body (16px at the default browser setting), 1.6 line-height (1.65 for Chinese), 2rem name and 1.5rem section headings. Publication metadata stays at .875rem. A 184px desktop contents column plus 32px gap sits beside the reading column at viewport widths of at least 1080px.
+- Original blue links (#1772d0); dark-orange hover/focus (#9d4b00) with underlining and a visible keyboard focus ring. Their white-background contrast ratios are 4.82:1 and 6.10:1. Research images remain 160px and all paper rows use the same white background.
 - Full author lists with Hin Wang Lin in bold. Equal-contribution marks only when verified.
 - Slash-separated resource links. No middle-dot separators or personal copyright footer.
 - Footer: Webpage template adapted from Jon Barron and Jacky Li.
@@ -15,7 +15,7 @@ Static trilingual academic website adapted from Jon Barron’s supplied source t
 - index.html: English homepage
 - zh.html: Traditional Chinese homepage
 - zh-hans.html: Simplified Chinese homepage
-- style.css: original Jon Barron CSS plus documented responsive additions
+- style.css: template fonts and proportions, with documented responsive and accessibility refinements
 - robots.txt: crawl instructions and sitemap location
 - sitemap.xml: the three public language pages
 - CV source and PDF are archived outside the publication directory pending revision.
@@ -26,6 +26,7 @@ Preview: `python3 -m http.server 8000 --bind 127.0.0.1`
 - Template: https://jonbarron.info/ and user-supplied jonbarron.github.io-master source.
 - Additional format and wording reference: https://jackyli-hkust.github.io/ and user-supplied web archive; both template references are credited in the footer.
 - Portrait: user-supplied 1759303492237.png, selected on 2026-10-07; copied without image alteration.
+- YLMASS crest: user-supplied image, added on 2026-10-08 without pixel alteration; displayed using the shared institution logo sizing.
 - HKPF logo: https://upload.wikimedia.org/wikipedia/commons/2/2b/HKPF_logo.png (user-selected source, 2026-10-07; original PNG)
 - Hong Kong Disneyland logo: https://news.hongkongdisneyland.com/app/themes/hkdlnews/assets/dist/images/hkdl-logo-color.svg (official newsroom; original SVG).
 - HKUST logo: https://geco.hkust.edu.hk/files/image_2.png (replacement selected by the user on 2026-10-07; original transparent PNG)
@@ -114,3 +115,51 @@ Public static website for https://hwlinaa.github.io/, maintained on the main bra
 - Ignore operating-system metadata, editor files, temporary files, local environment secrets, working materials and generated caches.
 - Remove the previously tracked .DS_Store from Git's index while retaining the local file. Stage only the public HTML, CSS, assets, crawler files, README, .gitignore and .nojekyll.
 - Validation: three language pages passed local-path, fragment, media-placement and chronological-order checks; desktop and 390px browser checks showed no horizontal overflow. Full publication dates stay together in resource links. Research, institution entries and selected awards are preserved.
+
+
+## Navigation, copy and structured data, 2026-10-08
+- Approved order: About and contact, Research, Patent, Education, Professional Experience, Entrepreneurship, Teaching & Service, Selected Honors & Awards, News. Existing public-service anchors remain valid.
+- Use semantic navigation and native fragment links. The desktop contents column uses CSS sticky rather than a fixed overlay; below 1080px it becomes a native details/summary disclosure. No JavaScript, scrolling library or build dependency is required. Keep both menus and all three language files in sync when sections change.
+- Introductions identify the PhD affiliation and advisor, then the research institute/laboratory and technical focus, following the user-approved revision below. The email address is displayed in full with a mailto link. The portrait is unchanged.
+- Universpirit's description identifies school audiences and the course series without inventing a cumulative customer/student count. NaviHK remains a technology consultancy because specific client projects and deliverables are not established in the source CV.
+- Youth Education now explains Talent Cup's organiser/co-organiser, the author's fixed-wing challenge design for editions 8 and 9, and edition 8's event-wide participation (36 schools, 755 teams, 2,265 students), supported by the existing R01 evidence record. These are competition totals, not Universpirit customers or the author's personal teaching reach. The unsupported “Hong Kong’s first” claim remains excluded. The organiser's source page is linked; a new full-page retrieval on 2026-10-08 failed, so this update relies on the existing verified evidence record.
+- ISEF is expanded to Regeneron International Science and Engineering Fair at first mention. The 2024/2025 national innovation awards use matching year, track and team-award wording. The 2024 award links to the Ministry of Education notice at https://www.moe.gov.cn/srcsite/A08/s7056/202504/t20250418_1187857.html; the existing official award-list evidence supports the result.
+- Each page includes static ProfilePage JSON-LD with a Person mainEntity and the same absolute person identifier. Names, public contact, research topics, HKUST affiliation/alumni relationship and GitHub/LinkedIn links reflect visible page content. JSON-LD helps describe the person; it does not guarantee search ranking, indexing or AI citation.
+- References: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position ; https://www.w3.org/WAI/tutorials/page-structure/regions/ ; https://developers.google.com/search/docs/appearance/structured-data/profile-page ; https://schema.org/Person
+
+- Validation: all three pages passed structural nesting, unique IDs, local resources, fragment targets, canonical/JSON-LD agreement and sitemap parsing. Five paper entries, seven awards, institution records and every existing external link were preserved. Browser checks at 320, 390, 768, 1079, 1080 and 1280px showed no horizontal overflow; desktop anchors/sticky positioning and mobile keyboard disclosure/navigation worked. JSON-LD was validated locally, not through Google's Rich Results Test or Search Console. This batch has not been committed or pushed.
+
+
+## Introduction wording and secondary-school affiliation, 2026-10-08
+- Traditional Chinese uses the user's exact approved introduction, with institution links retained. English and Simplified Chinese follow the same affiliation-to-research sequence.
+- Education adds Yuen Long Merchants Association Secondary School below HKUST, Forms 1–6, 2011-09 to 2017-08. Dates follow the user's main CV and explicit approval; no additional qualification or alumni-association appointment is inferred.
+- The supplied school crest is stored as assets/ylmass.png without image alteration, using the same contain sizing as the existing institution logos. The crest and school name link to https://www.ylmass.edu.hk/web/, verified as the official school homepage on 2026-10-08.
+- Person JSON-LD includes the school as a HighSchool entry alongside HKUST in alumniOf; the university affiliation remains unchanged. This revision is local and has not been committed or pushed.
+
+- Validation: Traditional Chinese introductory text matches the approved sentence exactly; all three education entries and alumniOf JSON-LD passed local checks. The crest loaded on desktop and all three pages had no horizontal overflow at 390px. Existing papers and award contents are unchanged.
+
+
+## Five additional public records, 2026-10-08
+- Added all five records approved by the author across the three language pages, using the existing main CV and evidence index.
+- News adds the Sing Tao interview on mainland car rental and driving (2024-04-01, M05) and the China Youth Daily interview on maritime rescue UAV development and the Challenge Cup (2019-11-14, M15). Both are linked as interviews; the rental article is not presented as an engineering achievement. The website and daily editions of M05 remain one interview.
+- Education links to Oriental Daily's coverage of the author's secondary-school panoramic camera invention (2016-09-30, M18). The article's main tree-bandage headline concerns other students and is not attributed to the author.
+- Youth Education adds the talk to 70 Form 6 students at HKFEW Wong Cho Bau Secondary School on 2024-11-08 (M14). This is the activity date; the source report was published on 2024-11-14. The English school name was cross-checked against its official School Profile.
+- Delegations & Judging adds Universpirit Innovation's special award at the 26th Hong Kong Youth Science and Technology Innovation Competition, the author's award-panel judging role and prize presentation on 2024-03-24 (E48). The date refers to presentation, not an unverified judging date. This is company support and personal service, not an award received by the author or evidence of a personal donation.
+- Source status: M05's article was read on 2026-10-08. New direct retrieval of M14, M15, M18 and the E48 review failed; existing evidence records remain the basis. Search results for the official E48 review and entry guide corroborate the event and company award, not a named individual judging appointment. No stronger verification claim is made.
+
+- Validation: all three pages passed HTML nesting, unique IDs, local assets, fragment targets, five added source links and descending News dates. Existing papers, awards, structured data and all previous links are preserved. A 1280px desktop view and 390px views of all three languages showed no horizontal overflow. This revision has not been committed or pushed.
+
+## Apple Design foundation pass, 2026-10-08
+- User approved readability, contrast, spacing, heading hierarchy, contents navigation and keyboard refinements. Preserve approved copy, author lists, images, section order, links and trilingual metadata.
+- Source: dickwu/apple-design-skill, commit 904b0eedc7cc778152f545506075d5bb5219ce77; installed separately under ~/.codex/skills/apple-design. Apply its web-relevant foundations, not native Apple app conventions.
+- Compared a full visual/framework rebuild with a shared-CSS refinement. Selected the latter: no additional runtime, build process, JavaScript or downloaded visual assets, with one stylesheet serving all three languages.
+- Standards: named CSS color roles; relative font sizing; 16px default body; 24px section headings; consistent 12/16/28px content spacing; 44px minimum contents targets; native details and anchors. Anchor destinations accept programmatic/native fragment focus without adding extra Tab stops.
+- Existing white appearance and academic identity remain deliberate. No native app chrome, glass layer, dark appearance or animation is introduced. Existing optional figure transitions honor prefers-reduced-motion; prefers-contrast:more increases text and link contrast.
+- Reference basis: accessibility.md > Vision / Mobility; layout.md > Visual hierarchy / Adaptability; typography.md > Ensuring legibility / Conveying hierarchy / Supporting Dynamic Type; color.md > Inclusive color; focus-and-selection.md > Best practices; branding.md > Best practices. Web contrast and reflow are checked against W3C WCAG 2.2, not native point-size thresholds.
+- Verification sequence: preserve a SHA-256 baseline; compare text, links and assets; inspect desktop and narrow layouts in all languages; exercise contents and keyboard focus; inspect a doubled-text fixture; save preview screenshots outside the public repository.
+- Verification result: all three languages passed 1280px, 768px, 390px and 320px overflow checks; images had no load failures. Separate 200% root-font fixtures (not browser zoom or a screen-reader audit) passed at 1280px, 390px and 320px, with no measured text-container overflow. Native language links and keyboard-operated mobile contents were exercised; fragment navigation moved focus to the chosen destination. Focus retained a 2px outline and underline. Text and resource URLs match the pre-change files exactly after excluding the new tabindex attributes.
+- This pass is local only; no commit or push was performed. Screenshots and test fixtures are stored outside this public repository.
+
+## Chinese contents labels, 2026-10-08
+- Desktop and mobile contents use two-character labels in Traditional and Simplified Chinese: 簡介、研究、專利、學歷、經歷、創業、服務、獎項、新聞.
+- Full section headings, anchor destinations and English labels are unchanged. Both contents menus in each Chinese page contain nine valid links.
