@@ -28,3 +28,6 @@
 /_site/
 /.jekyll-cache/
 /.sass-cache/
+
+# Private local maintenance notes
+/LOCAL_NOTES.md
